@@ -5,12 +5,12 @@ import "./globals.css";
 const parastoo = localFont({
   src: [
     {
-      path: "./fonts/Parastoo.woff",
+      path: "../public/fonts/Parastoo.woff",
       weight: "400",
       style: "normal",
     },
     {
-      path: "./fonts/Parastoo-Bold.woff",
+      path: "../public/fonts/Parastoo-Bold.woff",
       weight: "700",
       style: "normal",
     },
