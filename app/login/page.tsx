@@ -109,15 +109,13 @@ export default function LoginPage({
       </form>
 
       {/* No account? */}
-      <div className="text-center mt-4">
-        <span className="text-sm text-gray-600">
-          حساب کاربری ندارید؟
-          <span
-            className="text-teal-600 hover:underline"
-            onClick={toggleForm}
-          >
-            ثبت‌نام کنید
-          </span>
+      <div className="flex items-center justify-center gap-2 mt-4 text-sm">
+        <span className="text-gray-600">حساب کاربری ندارید؟</span>
+        <span
+          className="text-teal-600 hover:underline"
+          onClick={toggleForm}
+        >
+          ثبت‌نام کنید
         </span>
       </div>
     </>

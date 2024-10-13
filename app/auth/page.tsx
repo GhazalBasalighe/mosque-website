@@ -31,7 +31,7 @@ export default function AuthPage() {
       >
         <div className="flex flex-col justify-center shadow-2xl rounded-lg p-8 w-full max-w-md h-full bg-green-200 gap-6">
           {/* Scrollable form content */}
-          <div className="relative w-full h-full overflow-y-auto overflow-x-hidden">
+          <div className="relative w-full h-full overflow-hidden">
             <div
               className={`absolute top-1/4 left-0 w-full h-full transition-transform duration-500 ease-in-out transform ${
                 isLogin ? "translate-x-0" : "-translate-x-full"
