@@ -56,7 +56,6 @@ export default function LoginPage({
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                 : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
             }`}
-            placeholder="نام کاربری خود را وارد کنید"
           />
           {errors.username && (
             <span className="text-sm text-red-600">
@@ -88,7 +87,6 @@ export default function LoginPage({
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                 : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
             }`}
-            placeholder="رمز عبور خود را وارد کنید"
           />
           {errors.password && (
             <span className="text-sm text-red-600">
