@@ -124,12 +124,12 @@ export default function LoginPage() {
             </div>
           </form>
 
-          {/* Already have an account */}
+          {/* No account? */}
           <div className="text-center mt-4">
             <span className="text-sm text-gray-600">
-              حساب کاربری دارید؟{" "}
-              <a href="/login" className="text-teal-600 hover:underline">
-                ورود به حساب
+              حساب کاربری ندارید؟
+              <a href="/signup" className="text-teal-600 hover:underline">
+                ثبت‌نام کنید
               </a>
             </span>
           </div>
