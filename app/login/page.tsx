@@ -4,7 +4,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 interface IFormInput {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -25,7 +25,7 @@ export default function LoginPage() {
         src="/images/line-divider.png"
         width={500}
         height={500}
-        alt="Picture of the author"
+        alt="line divider"
         className="fixed top-2 -right-6"
       />
       <div
@@ -34,7 +34,7 @@ export default function LoginPage() {
           backgroundImage: `url('images/mosque-line-art.png')`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "contain",
-          backgroundPosition: "left",
+          backgroundPosition: "25% 90%",
         }}
       >
         <div className="flex flex-col justify-center shadow-2xl rounded-lg p-8 w-full max-w-md h-full bg-green-200 gap-6">
@@ -46,40 +46,37 @@ export default function LoginPage() {
             className="flex flex-col gap-6"
             noValidate
           >
-            {/* Email field */}
+            {/* Username field */}
             <div className="flex flex-col gap-2">
               <label
-                htmlFor="email"
+                htmlFor="username"
                 className="text-base font-medium text-gray-700"
               >
-                ایمیل
+                نام کاربری
               </label>
               <input
-                id="email"
-                type="email"
-                {...register("email", {
-                  required: "ایمیل ضروری است",
-                  pattern: {
-                    value: /^\S+@\S+\.\S+$/,
-                    message: "ایمیل معتبر وارد کنید",
-                  },
+                id="username"
+                type="text"
+                {...register("username", {
+                  required: "نام کاربری ضروری است",
                   maxLength: {
-                    value: 320,
-                    message: "ایمیل نباید بیشتر از ۳۲۰ کاراکتر باشد",
+                    value: 150,
+                    message: "نام کاربری نباید بیشتر از ۱۵۰ کاراکتر باشد",
                   },
                   validate: (value) =>
-                    value.trim() !== "" || "ایمیل نباید دارای فاصله باشد",
+                    value.trim() !== "" ||
+                    "نام کاربری نباید دارای فاصله باشد",
                 })}
                 className={`block w-full px-3 py-2 rounded-md shadow-sm border focus:outline-none ${
-                  errors.email
+                  errors.username
                     ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                     : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
                 }`}
-                placeholder="ایمیل خود را وارد کنید"
+                placeholder="نام کاربری خود را وارد کنید"
               />
-              {errors.email && (
+              {errors.username && (
                 <span className="text-sm text-red-600">
-                  {errors.email.message}
+                  {errors.username.message}
                 </span>
               )}
             </div>
