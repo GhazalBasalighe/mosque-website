@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import LoginPage from "../login/page";
-import SignupPage from "../signup/page";
 import Image from "next/image";
+import LoginPage from "../components/LoginPage/LoginPage";
+import SignupPage from "../components/SignupPage/SignupPage";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
