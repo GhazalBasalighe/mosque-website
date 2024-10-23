@@ -1,13 +1,14 @@
 "use client";
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input"; // Assuming Input component from Shadcn
-import { Button } from "@/components/ui/button"; // Assuming Button component from Shadcn
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface IFormInput {
   username: string;
   password: string;
   repeat_password: string;
   last_name: string;
+  first_name: string;
   phone_number: string;
 }
 
@@ -39,156 +40,185 @@ export default function SignupPage({
         className="flex flex-col gap-6 mt-6 max-h-screen overflow-y-auto"
         noValidate
       >
-        {/* Username field */}
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="username"
-            className="text-base font-medium text-gray-700"
-          >
-            نام کاربری
-          </label>
-          <Input
-            id="username"
-            type="text"
-            {...register("username", {
-              required: "نام کاربری ضروری است",
-              maxLength: {
-                value: 150,
-                message: "نام کاربری نباید بیشتر از ۱۵۰ کاراکتر باشد",
-              },
-              validate: (value) =>
-                value.trim() !== "" || "نام کاربری نباید دارای فاصله باشد",
-            })}
-            className={`${
-              errors.username
-                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
-            }`}
-          />
-          {errors.username && (
-            <span className="text-sm text-red-600">
-              {errors.username.message}
-            </span>
-          )}
+        <div className="flex items-center gap-4">
+          {/* First Name field */}
+          <div className="flex flex-col gap-2 w-1/2">
+            <label
+              htmlFor="first_name"
+              className="text-base font-medium text-gray-700"
+            >
+              نام
+            </label>
+            <Input
+              id="first_name"
+              type="text"
+              {...register("first_name", {
+                required: "نام  ضروری است",
+              })}
+              className={`${
+                errors.first_name
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                  : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
+              }`}
+            />
+            {errors.first_name && (
+              <span className="text-sm text-red-600">
+                {errors.first_name.message}
+              </span>
+            )}
+          </div>
+          {/* Last Name field */}
+          <div className="flex flex-col gap-2 w-1/2">
+            <label
+              htmlFor="last_name"
+              className="text-base font-medium text-gray-700"
+            >
+              نام خانوادگی
+            </label>
+            <Input
+              id="last_name"
+              type="text"
+              {...register("last_name", {
+                required: "نام خانوادگی ضروری است",
+              })}
+              className={`${
+                errors.last_name
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                  : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
+              }`}
+            />
+            {errors.last_name && (
+              <span className="text-sm text-red-600">
+                {errors.last_name.message}
+              </span>
+            )}
+          </div>
         </div>
-
-        {/* Last Name field */}
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="last_name"
-            className="text-base font-medium text-gray-700"
-          >
-            نام خانوادگی
-          </label>
-          <Input
-            id="last_name"
-            type="text"
-            {...register("last_name", {
-              required: "نام خانوادگی ضروری است",
-            })}
-            className={`${
-              errors.last_name
-                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
-            }`}
-          />
-          {errors.last_name && (
-            <span className="text-sm text-red-600">
-              {errors.last_name.message}
-            </span>
-          )}
+        <div className="flex items-center gap-4">
+          {/* Username field */}
+          <div className="flex flex-col gap-2 w-1/2">
+            <label
+              htmlFor="username"
+              className="text-base font-medium text-gray-700"
+            >
+              نام کاربری
+            </label>
+            <Input
+              id="username"
+              type="text"
+              {...register("username", {
+                required: "نام کاربری ضروری است",
+                maxLength: {
+                  value: 150,
+                  message: "نام کاربری نباید بیشتر از ۱۵۰ کاراکتر باشد",
+                },
+                validate: (value) =>
+                  value.trim() !== "" ||
+                  "نام کاربری نباید دارای فاصله باشد",
+              })}
+              className={`${
+                errors.username
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                  : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
+              }`}
+            />
+            {errors.username && (
+              <span className="text-sm text-red-600">
+                {errors.username.message}
+              </span>
+            )}
+          </div>
+          {/* Phone Number field */}
+          <div className="flex flex-col gap-2 w-1/2">
+            <label
+              htmlFor="phone_number"
+              className="text-base font-medium text-gray-700"
+            >
+              شماره تلفن
+            </label>
+            <Input
+              id="phone_number"
+              type="text"
+              {...register("phone_number", {
+                required: "شماره تلفن ضروری است",
+                pattern: {
+                  value: /^(\\+98|0)?9\d{9}$/,
+                  message:
+                    "شماره تلفن نامعتبر است. باید به صورت 09xxxxxxxxx باشد.",
+                },
+              })}
+              className={`${
+                errors.phone_number
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                  : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
+              }`}
+            />
+            {errors.phone_number && (
+              <span className="text-sm text-red-600">
+                {errors.phone_number.message}
+              </span>
+            )}
+          </div>
         </div>
-
-        {/* Phone Number field */}
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="phone_number"
-            className="text-base font-medium text-gray-700"
-          >
-            شماره تلفن
-          </label>
-          <Input
-            id="phone_number"
-            type="text"
-            {...register("phone_number", {
-              required: "شماره تلفن ضروری است",
-              pattern: {
-                value: /^(\\+98|0)?9\d{9}$/,
-                message:
-                  "شماره تلفن نامعتبر است. باید به صورت 09xxxxxxxxx باشد.",
-              },
-            })}
-            className={`${
-              errors.phone_number
-                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
-            }`}
-          />
-          {errors.phone_number && (
-            <span className="text-sm text-red-600">
-              {errors.phone_number.message}
-            </span>
-          )}
-        </div>
-
-        {/* Password field */}
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="password"
-            className="text-base font-medium text-gray-700"
-          >
-            رمز عبور
-          </label>
-          <Input
-            id="password"
-            type="password"
-            {...register("password", {
-              required: "رمز عبور ضروری است",
-              minLength: {
-                value: 6,
-                message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
-              },
-            })}
-            className={`${
-              errors.password
-                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
-            }`}
-          />
-          {errors.password && (
-            <span className="text-sm text-red-600">
-              {errors.password.message}
-            </span>
-          )}
-        </div>
-
-        {/* Repeat Password field */}
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="repeat_password"
-            className="text-base font-medium text-gray-700"
-          >
-            تکرار رمز عبور
-          </label>
-          <Input
-            id="repeat_password"
-            type="password"
-            {...register("repeat_password", {
-              required: "تکرار رمز عبور ضروری است",
-              validate: (value) =>
-                value === password || "رمز عبور مطابقت ندارد",
-            })}
-            className={`${
-              errors.repeat_password
-                ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
-            }`}
-          />
-          {errors.repeat_password && (
-            <span className="text-sm text-red-600">
-              {errors.repeat_password.message}
-            </span>
-          )}
+        <div className="flex items-center gap-4">
+          {/* Password field */}
+          <div className="flex flex-col gap-2 w-1/2">
+            <label
+              htmlFor="password"
+              className="text-base font-medium text-gray-700"
+            >
+              رمز عبور
+            </label>
+            <Input
+              id="password"
+              type="password"
+              {...register("password", {
+                required: "رمز عبور ضروری است",
+                minLength: {
+                  value: 6,
+                  message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
+                },
+              })}
+              className={`${
+                errors.password
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                  : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
+              }`}
+            />
+            {errors.password && (
+              <span className="text-sm text-red-600">
+                {errors.password.message}
+              </span>
+            )}
+          </div>
+          {/* Repeat Password field */}
+          <div className="flex flex-col gap-2 w-1/2">
+            <label
+              htmlFor="repeat_password"
+              className="text-base font-medium text-gray-700"
+            >
+              تکرار رمز عبور
+            </label>
+            <Input
+              id="repeat_password"
+              type="password"
+              {...register("repeat_password", {
+                required: "تکرار رمز عبور ضروری است",
+                validate: (value) =>
+                  value === password || "رمز عبور مطابقت ندارد",
+              })}
+              className={`${
+                errors.repeat_password
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                  : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
+              }`}
+            />
+            {errors.repeat_password && (
+              <span className="text-sm text-red-600">
+                {errors.repeat_password.message}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Submit button */}

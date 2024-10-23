@@ -56,7 +56,7 @@ export default function LoginPage({
             className={`${
               errors.username
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
+                : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
             }`}
           />
           {errors.username && (
@@ -87,7 +87,7 @@ export default function LoginPage({
             className={`${
               errors.password
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
-                : "border-gray-300 focus:ring-teal-500 focus:border-teal-500"
+                : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
             }`}
           />
           {errors.password && (
@@ -109,12 +109,12 @@ export default function LoginPage({
 
         {/* Already have an account? */}
         <div className="flex items-center justify-center gap-2 mt-4 text-sm">
-          <span className="text-gray-600">حساب کاربری دارید؟</span>
+          <span className="text-gray-600">حساب کاربری ندارید؟</span>
           <span
             className="text-teal-600 hover:underline cursor-pointer"
             onClick={toggleForm}
           >
-            ورود به حساب
+            ایجاد حساب جدید
           </span>
         </div>
       </form>

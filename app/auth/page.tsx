@@ -18,44 +18,52 @@ export default function AuthPage() {
         width={500}
         height={500}
         alt="line divider"
-        className="fixed top-2 -right-6"
+        className="fixed bottom-2 right-1"
       />
-      <div
-        className="flex justify-start items-start h-screen bg-green-100"
-        style={{
-          backgroundImage: `url('images/mosque-line-art.png')`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "contain",
-          backgroundPosition: "25% 90%",
-        }}
-      >
-        <div className="flex flex-col justify-center shadow-2xl rounded-lg p-8 w-full max-w-md h-full bg-green-200 gap-6">
-          {/* Scrollable form content */}
-          <div className="relative w-full h-full overflow-hidden">
-            <div
-              className={`absolute top-1/4 left-0 w-full h-full transition-transform duration-500 ease-in-out transform ${
-                isLogin ? "translate-x-0" : "-translate-x-full"
-              }`}
-            >
-              <LoginPage toggleForm={toggleForm} />
-            </div>
+      <div className="relative w-full h-screen">
+        {/* Background image */}
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url('images/pattern-bg.jpg')`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+          }}
+        ></div>
 
-            <div
-              className={`absolute top-[10%] left-0 w-full h-full transition-transform duration-500 ease-in-out transform  ${
-                isLogin ? "translate-x-full" : "translate-x-0"
-              }`}
-            >
-              <SignupPage toggleForm={toggleForm} />
+        {/* Green overlay */}
+        <div className="absolute inset-0 bg-teal-500 bg-opacity-30"></div>
+
+        <div className="relative flex justify-start items-start h-screen">
+          <div className="flex flex-col justify-center shadow-2xl p-8 max-w-lg gap-6 h-full w-full bg-white/30 rounded-md bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10">
+            {/* Scrollable form content */}
+            <div className="relative w-full h-full overflow-hidden">
+              <div
+                className={`absolute top-1/4 left-0 w-full h-full transition-transform duration-500 ease-in-out transform ${
+                  isLogin ? "translate-x-0" : "-translate-x-full"
+                }`}
+              >
+                <LoginPage toggleForm={toggleForm} />
+              </div>
+
+              <div
+                className={`absolute top-[10%] left-0 w-full h-full transition-transform duration-500 ease-in-out transform  ${
+                  isLogin ? "translate-x-full" : "translate-x-0"
+                }`}
+              >
+                <SignupPage toggleForm={toggleForm} />
+              </div>
             </div>
           </div>
         </div>
       </div>
+
       <Image
         src="/images/line-divider.png"
         width={500}
         height={500}
         alt="line divider"
-        className="fixed bottom-2 -right-6"
+        className="fixed bottom-2 right-1"
       />
     </div>
   );
