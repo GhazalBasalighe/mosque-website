@@ -2,6 +2,7 @@
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 interface IFormInput {
   username: string;
@@ -19,7 +20,18 @@ export default function LoginPage({
     formState: { errors },
   } = useForm<IFormInput>();
 
-  const onSubmit = (data: IFormInput) => {
+  const onSubmit = async (data: IFormInput) => {
+    try {
+      if (!process.env.NEXT_PUBLIC_SERVICE_URL) return;
+      const response = axios.post(
+        process.env.NEXT_PUBLIC_SERVICE_URL + "/auth/login",
+        {
+          username: data.username,
+          password: data.password,
+        }
+      );
+      console.log(response);
+    } catch (error) {}
     console.log("Login data", data);
   };
 
@@ -80,8 +92,8 @@ export default function LoginPage({
             {...register("password", {
               required: "رمز عبور ضروری است",
               minLength: {
-                value: 6,
-                message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
+                value: 4,
+                message: "رمز عبور باید حداقل ۴ کاراکتر باشد",
               },
             })}
             className={`${

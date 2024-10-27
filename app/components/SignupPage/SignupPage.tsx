@@ -2,6 +2,7 @@
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
 
 interface IFormInput {
   username: string;
@@ -27,7 +28,21 @@ export default function SignupPage({
   const password = watch("password");
 
   const onSubmit = (data: IFormInput) => {
-    console.log("Signup data", data);
+    try {
+      if (!process.env.NEXT_PUBLIC_SERVICE_URL) return;
+      const response = axios.post(
+        process.env.NEXT_PUBLIC_SERVICE_URL + "/auth/signup",
+        {
+          username: data.username,
+          password: data.password,
+          last_name: data.last_name,
+          repeat_password: data.repeat_password,
+          phone_number: data.phone_number,
+        }
+      );
+      console.log(response);
+    } catch (error) {}
+    console.log("Login data", data);
   };
 
   return (

@@ -13,13 +13,6 @@ export default function AuthPage() {
 
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      <Image
-        src="/images/line-divider.png"
-        width={500}
-        height={500}
-        alt="line divider"
-        className="fixed bottom-2 right-1"
-      />
       <div className="relative w-full h-screen">
         {/* Background image */}
         <div
