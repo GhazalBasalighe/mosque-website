@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface IFormInput {
   username: string;
@@ -25,12 +27,16 @@ export default function SignupPage({
     formState: { errors },
   } = useForm<IFormInput>();
 
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const [isRepeatPasswordVisible, setRepeatPasswordVisible] =
+    useState(false);
+
   const password = watch("password");
 
-  const onSubmit = (data: IFormInput) => {
+  const onSubmit = async (data: IFormInput) => {
     try {
       if (!process.env.NEXT_PUBLIC_SERVICE_URL) return;
-      const response = axios.post(
+      const response = await axios.post(
         process.env.NEXT_PUBLIC_SERVICE_URL + "/auth/signup",
         {
           username: data.username,
@@ -41,8 +47,10 @@ export default function SignupPage({
         }
       );
       console.log(response);
-    } catch (error) {}
-    console.log("Login data", data);
+    } catch (error) {
+      console.error("Error during signup:", error);
+    }
+    console.log("Signup data", data);
   };
 
   return (
@@ -176,8 +184,8 @@ export default function SignupPage({
           </div>
         </div>
         <div className="flex items-center gap-4">
-          {/* Password field */}
-          <div className="flex flex-col gap-2 w-1/2">
+          {/* Password field with visibility toggle */}
+          <div className="flex flex-col gap-2 relative">
             <label
               htmlFor="password"
               className="text-base font-medium text-gray-700"
@@ -186,7 +194,7 @@ export default function SignupPage({
             </label>
             <Input
               id="password"
-              type="password"
+              type={isPasswordVisible ? "text" : "password"}
               {...register("password", {
                 required: "رمز عبور ضروری است",
                 minLength: {
@@ -198,16 +206,24 @@ export default function SignupPage({
                 errors.password
                   ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                   : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
-              }`}
+              } pl-10`} // Adds padding for the icon
             />
+            <button
+              type="button"
+              className="absolute left-3 top-10 text-gray-600"
+              onClick={() => setPasswordVisible(!isPasswordVisible)}
+            >
+              {isPasswordVisible ? <EyeOff /> : <Eye />}
+            </button>
             {errors.password && (
               <span className="text-sm text-red-600">
                 {errors.password.message}
               </span>
             )}
           </div>
-          {/* Repeat Password field */}
-          <div className="flex flex-col gap-2 w-1/2">
+
+          {/* Repeat Password field with visibility toggle */}
+          <div className="flex flex-col gap-2 relative">
             <label
               htmlFor="repeat_password"
               className="text-base font-medium text-gray-700"
@@ -216,7 +232,7 @@ export default function SignupPage({
             </label>
             <Input
               id="repeat_password"
-              type="password"
+              type={isRepeatPasswordVisible ? "text" : "password"}
               {...register("repeat_password", {
                 required: "تکرار رمز عبور ضروری است",
                 validate: (value) =>
@@ -226,8 +242,17 @@ export default function SignupPage({
                 errors.repeat_password
                   ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                   : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
-              }`}
+              } pl-10`}
             />
+            <button
+              type="button"
+              className="absolute left-3 top-10 text-gray-600"
+              onClick={() =>
+                setRepeatPasswordVisible(!isRepeatPasswordVisible)
+              }
+            >
+              {isRepeatPasswordVisible ? <EyeOff /> : <Eye />}
+            </button>
             {errors.repeat_password && (
               <span className="text-sm text-red-600">
                 {errors.repeat_password.message}

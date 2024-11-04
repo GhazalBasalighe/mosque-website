@@ -1,7 +1,9 @@
 "use client";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 
 interface IFormInput {
@@ -20,10 +22,12 @@ export default function LoginPage({
     formState: { errors },
   } = useForm<IFormInput>();
 
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
+
   const onSubmit = async (data: IFormInput) => {
     try {
       if (!process.env.NEXT_PUBLIC_SERVICE_URL) return;
-      const response = axios.post(
+      const response = await axios.post(
         process.env.NEXT_PUBLIC_SERVICE_URL + "/auth/login",
         {
           username: data.username,
@@ -31,7 +35,9 @@ export default function LoginPage({
         }
       );
       console.log(response);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
     console.log("Login data", data);
   };
 
@@ -78,8 +84,8 @@ export default function LoginPage({
           )}
         </div>
 
-        {/* Password field */}
-        <div className="flex flex-col gap-2">
+        {/* Password field with visibility toggle */}
+        <div className="flex flex-col gap-2 relative">
           <label
             htmlFor="password"
             className="text-base font-medium text-gray-700"
@@ -88,7 +94,7 @@ export default function LoginPage({
           </label>
           <Input
             id="password"
-            type="password"
+            type={isPasswordVisible ? "text" : "password"}
             {...register("password", {
               required: "رمز عبور ضروری است",
               minLength: {
@@ -100,8 +106,15 @@ export default function LoginPage({
               errors.password
                 ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                 : "border-gray-400 focus:ring-teal-500 focus:border-teal-500"
-            }`}
+            } pl-10`} // Adds padding for the icon
           />
+          <button
+            type="button"
+            className="absolute left-3 top-10 text-gray-600"
+            onClick={() => setPasswordVisible(!isPasswordVisible)}
+          >
+            {isPasswordVisible ? <EyeOff /> : <Eye />}
+          </button>
           {errors.password && (
             <span className="text-sm text-red-600">
               {errors.password.message}
