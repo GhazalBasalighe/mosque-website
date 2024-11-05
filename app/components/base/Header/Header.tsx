@@ -19,7 +19,7 @@ export default function Component() {
             <li>
               <Link
                 href="/news"
-                className="hover:text-teal-200 transition-colors duration-200"
+                className="relative pb-2 hover:text-teal-200 transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-[2px] after:bg-teal-200 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
               >
                 رویدادها
               </Link>
@@ -27,7 +27,7 @@ export default function Component() {
             <li>
               <Link
                 href="/articles"
-                className="hover:text-teal-200 transition-colors duration-200"
+                className="relative pb-2 hover:text-teal-200 transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-[2px] after:bg-teal-200 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
               >
                 مقالات
               </Link>
@@ -35,7 +35,7 @@ export default function Component() {
             <li>
               <Link
                 href="/about"
-                className="hover:text-teal-200 transition-colors duration-200"
+                className="relative pb-2 hover:text-teal-200 transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-[2px] after:bg-teal-200 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
               >
                 درباره ما
               </Link>
@@ -43,7 +43,7 @@ export default function Component() {
             <li>
               <Link
                 href="/contact"
-                className="hover:text-teal-200 transition-colors duration-200"
+                className="relative pb-2 hover:text-teal-200 transition-colors duration-200 after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-0 after:h-[2px] after:bg-teal-200 after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-300 after:origin-left"
               >
                 تماس با ما
               </Link>
