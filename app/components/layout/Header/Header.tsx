@@ -28,7 +28,7 @@ export default function Header() {
           <div className="text-2xl font-bold">بسم الله الرحمن الرحيم</div>
           <Link href="/auth">
             <Button variant="outline" size="lg" className="text-white">
-              ورود
+              ورود / ثبت نام
             </Button>
           </Link>
         </div>
