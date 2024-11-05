@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 export default function HeroSection() {
   return (
     <section
-      className="relative h-screen bg-cover bg-center flex items-center justify-center"
+      className="relative h-[70vh] bg-cover bg-center flex items-center justify-center"
       style={{
         backgroundImage: "url('images/pattern-vector-1.svg')",
         backgroundRepeat: "repeat",
@@ -13,13 +13,13 @@ export default function HeroSection() {
       }}
     >
       {/* Overlay */}
-      <div className="absolute inset-0  backdrop-blur-sm"></div>
+      <div className="absolute inset-0 bg-teal-800/30 backdrop-blur-sm"></div>
 
-      <div className="relative z-10 text-center max-w-2xl bg-teal-800/60 backdrop-blur-lg px-4 py-8 rounded-xl">
-        <h2 className="text-4xl font-bold text-white mb-8">
+      <div className="relative z-10 text-center max-w-2xl bg-white/60 backdrop-blur-lg px-4 py-8 rounded-xl">
+        <h2 className="text-4xl font-bold text-black mb-8">
           به مسجد خوش آمدید
         </h2>
-        <p className="text-lg md:text-xl text-gray-200 mb-6">
+        <p className="text-lg md:text-xl text-gray-800 mb-6">
           با ما در این خانه مقدس همراه شوید و در جمع معنوی شرکت کنید تا به
           سوی نور و ایمان گام برداریم.
         </p>
