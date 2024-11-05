@@ -26,7 +26,7 @@ export default function FAQ() {
         <div className="text-center mt-10 mb-20 relative">
           <h2 className="text-3xl font-bold mb-8 text-center">
             سوالات متداول
-          </h2>{" "}
+          </h2>
           <img
             src="/images/frame.svg"
             alt="Decorative Frame"
@@ -34,6 +34,7 @@ export default function FAQ() {
             style={{ top: -70, width: "600px", height: "170px" }}
           />
         </div>
+
         <div className="space-y-4">
           {faqs.map((faq, index) => {
             const [isOpen, setIsOpen] = useState(false);
@@ -41,15 +42,22 @@ export default function FAQ() {
             return (
               <div
                 key={index}
-                onClick={() => setIsOpen(!isOpen)}
+                onMouseEnter={() => setIsOpen(true)}
+                onMouseLeave={() => setIsOpen(false)}
                 className="bg-white p-4 rounded-lg shadow-md cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <h3 className="text-xl font-semibold text-teal-600">
                   {faq.question}
                 </h3>
-                {isOpen && (
-                  <p className="text-gray-700 mt-2">{faq.answer}</p>
-                )}
+                <div
+                  className={`transition-all duration-500 ease-in-out overflow-hidden ${
+                    isOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                  }`}
+                >
+                  <p className="text-gray-700 mt-2 animate-fade-in">
+                    {faq.answer}
+                  </p>
+                </div>
               </div>
             );
           })}
