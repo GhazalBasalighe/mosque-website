@@ -9,7 +9,7 @@ export default function NewsSection() {
       date: "۱۲ آبان ۱۴۰۲",
       img: "/images/news/jashn-milad.jpg",
       excerpt:
-        "به مناسبت میلاد پیامبر اکرم (ص)، مراسم ویژه‌ای با حضور علما و مداحان محترم برگزار می‌شود.",
+        "به مناسبت میلاد پیامبر اکرم (ص)، مراسم ویژه‌ای با حضور علما و مداحان محترم برگزار می‌شود. این جشن به منظور بزرگداشت میلاد حضرت محمد (ص) و ترویج آموزه‌های ایشان در جامعه اسلامی ترتیب داده شده است و شامل برنامه‌های متنوعی از جمله سخنرانی، شعرخوانی و پخش نذورات می‌باشد. همه علاقه‌مندان دعوت شده‌اند.",
     },
     {
       id: 2,
@@ -17,7 +17,7 @@ export default function NewsSection() {
       date: "۲۰ آبان ۱۴۰۲",
       img: "/images/news/kelas-quran.jfif",
       excerpt:
-        "مسجد برنامه‌هایی برای آموزش قرآن و درک بهتر مفاهیم آن برگزار می‌کند. علاقه‌مندان می‌توانند ثبت‌نام نمایند.",
+        "مسجد برنامه‌هایی برای آموزش قرآن و درک بهتر مفاهیم آن برگزار می‌کند. در این کلاس‌ها تلاوت قرآن، تفسیر آیات و احادیث مرتبط آموزش داده می‌شود و مربیان مجرب این جلسات را هدایت می‌کنند. علاقه‌مندان از تمامی سطوح می‌توانند شرکت کنند تا با آموزه‌های اسلامی بیشتر آشنا شوند و درک عمیق‌تری از کتاب مقدس قرآن پیدا کنند.",
     },
     {
       id: 3,
@@ -25,7 +25,7 @@ export default function NewsSection() {
       date: "۲۸ آبان ۱۴۰۲",
       img: "/images/news/yadvare.jpg",
       excerpt:
-        "یادواره‌ای برای شهدای محله برگزار می‌شود تا یاد و خاطره آن‌ها گرامی داشته شود.",
+        "یادواره‌ای برای شهدای محله برگزار می‌شود تا یاد و خاطره آن‌ها گرامی داشته شود. در این مراسم، سخنرانی‌هایی در خصوص ایثار و فداکاری شهدا ارائه خواهد شد و خانواده‌های آن‌ها نیز دعوت شده‌اند. همچنین، فضای معنوی مراسم با قرائت قرآن و پخش سرودهای ملی و مذهبی همراه خواهد بود و فرصتی برای تجدید عهد با آرمان‌های شهدا فراهم می‌شود.",
     },
   ];
 
@@ -48,14 +48,14 @@ export default function NewsSection() {
           {newsItems.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-transform transform hover:scale-105 duration-300"
+              className="relative bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 duration-300 hover:shadow-2xl"
             >
-              {/* News Image */}
-              <div className="h-48 overflow-hidden rounded-t-lg">
+              {/* News Image with Overlay */}
+              <div className="relative h-48 overflow-hidden rounded-t-lg">
                 <img
                   src={item.img}
                   alt={item.title}
-                  className="object-cover w-full h-full transition-transform duration-200 transform hover:scale-110"
+                  className="object-cover w-full h-full transition-transform duration-200 transform "
                 />
               </div>
 
@@ -65,7 +65,9 @@ export default function NewsSection() {
                   {item.title}
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">{item.date}</p>
-                <p className="text-gray-700 mb-4">{item.excerpt}</p>
+                <p className="text-gray-700 mb-4 line-clamp-2">
+                  {item.excerpt}
+                </p>
                 <Link
                   href={`/news/${item.id}`}
                   className="text-teal-600 hover:text-teal-700 transition-colors"

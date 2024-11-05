@@ -1,12 +1,34 @@
 "use client";
 
+import { Moon, Sun, Sunset } from "lucide-react";
+
 export default function PrayerTimes() {
   const prayerTimes = [
-    { name: "اذان صبح", time: "۰۵:۱۵ صبح" },
-    { name: "اذان ظهر", time: "۱۲:۳۰ ظهر" },
-    { name: "اذان عصر", time: "۱۶:۰۰ عصر" },
-    { name: "اذان مغرب", time: "۱۸:۱۰ عصر" },
-    { name: "اذان عشا", time: "۱۹:۳۰ شب" },
+    {
+      name: "اذان صبح",
+      time: "۰۵:۱۵ صبح",
+      icon: <Sun className="text-yellow-400" />,
+    },
+    {
+      name: "اذان ظهر",
+      time: "۱۲:۳۰ ظهر",
+      icon: <Sun className="text-orange-500" />,
+    },
+    {
+      name: "اذان عصر",
+      time: "۱۶:۰۰ عصر",
+      icon: <Sunset className="text-red-500" />,
+    },
+    {
+      name: "اذان مغرب",
+      time: "۱۸:۱۰ عصر",
+      icon: <Moon className="text-blue-500" />,
+    },
+    {
+      name: "اذان عشا",
+      time: "۱۹:۳۰ شب",
+      icon: <Moon className="text-indigo-600" />,
+    },
   ];
 
   return (
@@ -32,10 +54,9 @@ export default function PrayerTimes() {
                 backgroundSize: "180px",
               }}
             >
-              <h3 className="text-2xl font-semibold mb-2">
-                {prayer.name}
-              </h3>
-              <p className="text-teal-600 text-xl font-bold">
+              <div className="mb-2">{prayer.icon}</div>
+              <h3 className="text-xl font-semibold mb-2">{prayer.name}</h3>
+              <p className="text-gray-500 text-lg font-bold">
                 {prayer.time}
               </p>
             </div>
