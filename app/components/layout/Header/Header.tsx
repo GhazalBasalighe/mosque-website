@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Component() {
   return (
-    <header className="bg-teal-800 text-white p-4 pb-10 z-10 shadow-sm sticky">
+    <header className="bg-teal-800 text-white p-4 pb-10 z-10 shadow-sm sticky top-0">
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
           <div className="text-2xl font-bold ">بسم الله الرحمن الرحيم</div>

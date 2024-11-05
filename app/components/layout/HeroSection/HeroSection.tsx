@@ -15,7 +15,7 @@ export default function HeroSection() {
       {/* Overlay */}
       <div className="absolute inset-0 bg-teal-800/30 backdrop-blur-sm"></div>
 
-      <div className="relative z-10 text-center max-w-2xl bg-white/60 backdrop-blur-lg px-4 py-8 rounded-xl">
+      <div className="relative text-center max-w-2xl bg-white/60 backdrop-blur-lg px-4 py-8 rounded-xl">
         <h2 className="text-4xl font-bold text-black mb-8">
           به مسجد خوش آمدید
         </h2>

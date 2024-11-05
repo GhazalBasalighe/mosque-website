@@ -30,7 +30,7 @@ export default function NewsSection() {
   ];
 
   return (
-    <section className="py-12 bg-gray-100 text-gray-900">
+    <section className="py-12 bg-gray-200 text-gray-900 border-b-2 border-gray-300">
       <div className="container mx-auto px-6">
         {/* Section Title with Decorative Frame */}
         <div className="text-center mt-10 mb-20 relative">
@@ -38,7 +38,7 @@ export default function NewsSection() {
           <img
             src="/images/frame.svg"
             alt="Decorative Frame"
-            className="absolute left-1/2 transform -translate-x-1/2 mt-2"
+            className="absolute left-1/2 transform -translate-x-1/2 mb-10"
             style={{ top: -70, width: "600px", height: "170px" }}
           />
         </div>
@@ -48,14 +48,14 @@ export default function NewsSection() {
           {newsItems.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200"
+              className="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-transform transform hover:scale-105 duration-300"
             >
               {/* News Image */}
               <div className="h-48 overflow-hidden rounded-t-lg">
                 <img
                   src={item.img}
                   alt={item.title}
-                  className="object-cover w-full h-full transition-transform duration-200 transform hover:scale-105"
+                  className="object-cover w-full h-full transition-transform duration-200 transform hover:scale-110"
                 />
               </div>
 
