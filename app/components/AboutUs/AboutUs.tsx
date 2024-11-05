@@ -52,7 +52,7 @@ export default function AboutUs() {
           </div>
           {/* Text Content */}
           <div className="flex flex-col gap-6">
-            <h3 className="text-2xl font-semibold text-teal-600">
+            <h3 className="text-2xl max-w-max font-semibold text-teal-600 border-b-2 border-teal-600 pb-2">
               تاریخچه مسجد
             </h3>
             <p className="text-lg leading-relaxed">
@@ -72,7 +72,7 @@ export default function AboutUs() {
 
             {/* Reservation Section */}
             <div className="mt-6">
-              <h3 className="text-2xl font-semibold mb-3 text-teal-600">
+              <h3 className="text-2xl max-w-max font-semibold text-teal-600 border-b-2 border-teal-600 pb-2">
                 رزرو مسجد برای مراسم
               </h3>
               <p className="text-gray-700">

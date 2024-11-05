@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 interface IFormInput {
   username: string;
@@ -55,9 +56,11 @@ export default function SignupPage({
 
   return (
     <div className="max-h-screen overflow-y-auto">
-      <h2 className="text-3xl font-bold text-center text-gray-700">
-        ثبت نام در سایت
-      </h2>
+      <Link href="/">
+        <h2 className="text-3xl font-bold text-center text-gray-700">
+          ثبت نام در سایت
+        </h2>
+      </Link>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-6 mt-6 max-h-screen overflow-y-auto"

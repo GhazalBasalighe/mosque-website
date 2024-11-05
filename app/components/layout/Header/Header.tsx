@@ -25,7 +25,11 @@ export default function Header() {
     >
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
-          <div className="text-2xl font-bold">بسم الله الرحمن الرحيم</div>
+          <Link href="/">
+            <div className="text-2xl font-bold">
+              بسم الله الرحمن الرحيم
+            </div>
+          </Link>
           <Link href="/auth">
             <Button variant="outline" size="lg" className="text-white">
               ورود / ثبت نام

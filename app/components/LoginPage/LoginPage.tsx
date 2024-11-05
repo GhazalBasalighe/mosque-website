@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
+import Link from "next/link";
 
 interface IFormInput {
   username: string;
@@ -43,9 +44,11 @@ export default function LoginPage({
 
   return (
     <>
-      <h2 className="text-3xl font-bold text-center text-gray-700">
-        ورود به سایت مسجد
-      </h2>
+      <Link href="/">
+        <h2 className="text-3xl font-bold text-center text-gray-700">
+          ورود به سایت مسجد
+        </h2>
+      </Link>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-6 mt-6"
