@@ -124,10 +124,7 @@ export default function LoginPage({
 
         {/* Submit button */}
         <div className="flex justify-center">
-          <Button
-            type="submit"
-            className="w-full bg-teal-600 text-white py-2 px-4 rounded-md shadow hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
-          >
+          <Button type="submit" className="w-full">
             ورود
           </Button>
         </div>

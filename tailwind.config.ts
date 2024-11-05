@@ -20,9 +20,7 @@ const config: Config = {
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"), // Keep the tailwindcss-animate plugin if needed
-  ],
+  plugins: [require("tailwindcss-animate")],
 };
 
 export default config;
