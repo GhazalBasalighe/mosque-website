@@ -25,7 +25,12 @@ export default function Header() {
     >
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
-          <Link href="/">
+          <Link href="/" className="flex items-center gap-4">
+            <img
+              src="/images/logo.png"
+              alt="profile"
+              className="rounded-full w-14 h-14"
+            />
             <div className="text-2xl font-bold">
               بسم الله الرحمن الرحيم
             </div>

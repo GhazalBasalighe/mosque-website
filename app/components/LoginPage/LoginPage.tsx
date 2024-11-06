@@ -12,6 +12,10 @@ interface IFormInput {
   password: string;
 }
 
+interface ILoginResponse {
+  access_token: string;
+}
+
 export default function LoginPage({
   toggleForm,
 }: {
@@ -23,19 +27,19 @@ export default function LoginPage({
     formState: { errors },
   } = useForm<IFormInput>();
 
-  const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const [isPasswordVisible, setPasswordVisible] = useState<boolean>(false);
 
   const onSubmit = async (data: IFormInput) => {
     try {
       if (!process.env.NEXT_PUBLIC_SERVICE_URL) return;
-      const response = await axios.post(
+      const response = await axios.post<ILoginResponse>(
         process.env.NEXT_PUBLIC_SERVICE_URL + "/auth/login",
         {
           username: data.username,
           password: data.password,
         }
       );
-      console.log(response);
+      localStorage.setItem("token", response.data.access_token);
     } catch (error) {
       console.error("Error during login:", error);
     }
@@ -44,11 +48,9 @@ export default function LoginPage({
 
   return (
     <>
-      <Link href="/">
-        <h2 className="text-3xl font-bold text-center text-gray-700">
-          ورود به سایت مسجد
-        </h2>
-      </Link>
+      <h2 className="text-3xl font-bold text-center text-gray-700">
+        ورود به سایت مسجد
+      </h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-6 mt-6"

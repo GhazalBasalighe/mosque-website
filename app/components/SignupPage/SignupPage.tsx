@@ -42,12 +42,12 @@ export default function SignupPage({
         {
           username: data.username,
           password: data.password,
+          first_name: data.first_name,
           last_name: data.last_name,
           repeat_password: data.repeat_password,
           phone_number: data.phone_number,
         }
       );
-      console.log(response);
     } catch (error) {
       console.error("Error during signup:", error);
     }
@@ -56,11 +56,9 @@ export default function SignupPage({
 
   return (
     <div className="max-h-screen overflow-y-auto">
-      <Link href="/">
-        <h2 className="text-3xl font-bold text-center text-gray-700">
-          ثبت نام در سایت
-        </h2>
-      </Link>
+      <h2 className="text-3xl font-bold text-center text-gray-700">
+        ثبت نام در سایت
+      </h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col gap-6 mt-6 max-h-screen overflow-y-auto"
