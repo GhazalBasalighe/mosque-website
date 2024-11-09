@@ -1,11 +1,12 @@
 "use client";
-import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import axios from "axios";
-import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 interface IFormInput {
   username: string;
@@ -31,6 +32,7 @@ export default function SignupPage({
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [isRepeatPasswordVisible, setRepeatPasswordVisible] =
     useState(false);
+  const router = useRouter();
 
   const password = watch("password");
 
@@ -48,6 +50,13 @@ export default function SignupPage({
           phone_number: data.phone_number,
         }
       );
+
+      if (response.status === 201) {
+        toast.success("ساخت حساب با موفقیت انجام شد");
+        setTimeout(() => {
+          router.push("/");
+        }, 300);
+      }
     } catch (error) {
       console.error("Error during signup:", error);
     }

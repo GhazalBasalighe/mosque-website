@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 const parastoo = localFont({
   src: [
@@ -29,6 +30,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
+      <div>
+        <Toaster />
+      </div>
+
       <body className={`${parastoo.variable} antialiased`}>
         {children}
       </body>

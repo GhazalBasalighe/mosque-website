@@ -1,11 +1,12 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
-import axios from "axios";
-import Link from "next/link";
+import toast from "react-hot-toast";
 
 interface IFormInput {
   username: string;
@@ -28,6 +29,7 @@ export default function LoginPage({
   } = useForm<IFormInput>();
 
   const [isPasswordVisible, setPasswordVisible] = useState<boolean>(false);
+  const router = useRouter();
 
   const onSubmit = async (data: IFormInput) => {
     try {
@@ -40,6 +42,17 @@ export default function LoginPage({
         }
       );
       localStorage.setItem("token", response.data.access_token);
+      if (response.status === 200) {
+        toast.success("ورود به حساب با موفقیت انجام شد");
+        setTimeout(() => {
+          const role = "user";
+          if (role === "user") {
+            router.push("/user");
+          } else {
+            router.push("/admin");
+          }
+        }, 300);
+      }
     } catch (error) {
       console.error("Error during login:", error);
     }
