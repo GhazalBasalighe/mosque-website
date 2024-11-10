@@ -10,14 +10,17 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { SubmitHandler } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { axiosInstance } from "@/app/api/api";
+import toast from "react-hot-toast";
+import Avatar from "react-avatar-edit";
 
 type AccountFormValues = {
   firstName: string;
   lastName: string;
   username: string;
   phoneNumber: string;
+  avatar: string;
 };
 
 type UserResponse = {
@@ -39,28 +42,55 @@ function Page() {
     setValue,
     formState: { errors },
   } = useForm<AccountFormValues>();
+  const [preview, setPreview] = useState<string | null>(null);
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
     if (userId) {
-      axiosInstance
-        .get<UserResponse>(`/user/${userId}`)
-        .then((response) => {
-          const { first_name, last_name, username, phone_number } =
-            response.data;
+      (async () => {
+        try {
+          const response = await axiosInstance.get<UserResponse>(
+            `/user/${userId}`
+          );
+          const {
+            first_name,
+            last_name,
+            username,
+            phone_number,
+            avatar_path,
+          } = response.data;
           setValue("firstName", first_name);
           setValue("lastName", last_name);
           setValue("username", username);
           setValue("phoneNumber", phone_number);
-        })
-        .catch((error) => {
+          setPreview(avatar_path);
+        } catch (error) {
           console.error("Failed to fetch user data", error);
-        });
+          toast.error("خطایی در بارگزاری اولیه مقادیر به وجود آمد");
+        }
+      })();
     }
   }, [setValue]);
 
-  const onSubmitAccount: SubmitHandler<AccountFormValues> = (data) => {
-    console.log("Account Data:", data);
+  const onSubmitAccount: SubmitHandler<AccountFormValues> = async (
+    data
+  ) => {
+    const userId = localStorage.getItem("id");
+    if (userId) {
+      try {
+        await axiosInstance.put(`/user/${userId}`, {
+          first_name: data.firstName,
+          last_name: data.lastName,
+          username: data.username,
+          phone_number: data.phoneNumber,
+          avatar_path: preview,
+        });
+        toast.success("ویرایش کاربر با موفقیت صورت گرفت");
+      } catch (error) {
+        console.error("Failed to update user data", error);
+        toast.error("ویرایش اطلاعات با خطا مواجه شد");
+      }
+    }
   };
 
   return (
@@ -94,6 +124,14 @@ function Page() {
             در این قسمت می‌توانید اطلاعات کاربری خود را ویرایش کنید
           </p>
           <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="avatar">تصویر پروفایل</Label>
+              <Avatar
+                width={390}
+                height={295}
+                src={preview || undefined}
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="firstName">نام</Label>
               <Input
