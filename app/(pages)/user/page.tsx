@@ -48,6 +48,10 @@ function Page() {
   const [defaultValues, setDefaultValues] =
     useState<AccountFormValues | null>(null);
   const [avatarFile, setAvatarFile] = useState<string | null>(null);
+  const [username, setUsername] = useState<string | null>(null);
+  const [profilePhoto, setProfilePhoto] = useState<string>(
+    "/images/default-pfp.webp"
+  );
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
@@ -75,10 +79,7 @@ function Page() {
           setValue("lastName", last_name);
           setValue("username", username);
           setValue("phoneNumber", phone_number);
-          if (avatar_path) {
-            setPreview(avatar_path);
-            setAvatarFile(avatar_path);
-          }
+          setUsername(username);
         } catch (error) {
           console.error("Failed to fetch user data", error);
           toast.error("خطایی در بارگزاری اولیه مقادیر به وجود آمد");
@@ -155,22 +156,59 @@ function Page() {
     }
   };
 
+  const getProfilePhoto = async () => {
+    const userId = localStorage.getItem("id");
+    if (userId) {
+      try {
+        const response = await axiosInstance.get(
+          `/user/avatar/${userId}`,
+          {
+            responseType: "blob",
+          }
+        );
+        const imageUrl = URL.createObjectURL(response.data);
+        setProfilePhoto(imageUrl);
+      } catch (error) {
+        console.error("Error fetching profile photo", error);
+        setProfilePhoto("/images/default-pfp.webp");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getProfilePhoto();
+  }, []);
+
   return (
     <Tabs defaultValue="account" className="w-full" dir="rtl">
-      <TabsList className="flex justify-start space-x-2 p-4 bg-teal-800 h-20 rounded-none">
-        <TabsTrigger
-          value="account"
-          className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
-        >
-          حساب کاربری
-        </TabsTrigger>
-        <TabsTrigger
-          value="reservationManagement"
-          className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
-        >
-          مدیریت رزروها
-        </TabsTrigger>
-      </TabsList>
+      <div className="flex items-center justify-between p-4 bg-teal-800 h-20 rounded-none">
+        <TabsList className="flex space-x-2 bg-transparent">
+          <TabsTrigger
+            value="account"
+            className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
+          >
+            حساب کاربری
+          </TabsTrigger>
+          <TabsTrigger
+            value="reservationManagement"
+            className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
+          >
+            مدیریت رزروها
+          </TabsTrigger>
+        </TabsList>
+        <div className="flex items-center gap-4 space-x-4">
+          {profilePhoto && (
+            <img
+              src={profilePhoto}
+              alt="Profile Picture"
+              className="w-12 h-12 rounded-full object-cover"
+            />
+          )}
+          {username && (
+            <span className="text-white font-bold">سلام {username} !</span>
+          )}
+        </div>
+      </div>
       <TabsContent
         value="account"
         className="p-6 flex justify-center items-center bg-teal-100 mt-0 relative"
@@ -205,10 +243,11 @@ function Page() {
               <div className="space-y-2">
                 <Label htmlFor="avatar">تصویر پروفایل</Label>
                 <Avatar
-                  width={300}
-                  height={100}
+                  width={150}
+                  height={150}
                   src={preview || undefined}
                   label="انتخاب کنید"
+                  labelStyle={{ fontSize: "14px" }}
                   onClose={() => setPreview(null)}
                   onCrop={(croppedImage) => setAvatarFile(croppedImage)}
                 />
