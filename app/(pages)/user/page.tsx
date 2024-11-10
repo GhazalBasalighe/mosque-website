@@ -1,3 +1,4 @@
+"use client";
 import {
   Tabs,
   TabsContent,
@@ -7,7 +8,61 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-function page() {
+import { useForm } from "react-hook-form";
+import { SubmitHandler } from "react-hook-form";
+import { useEffect } from "react";
+import { axiosInstance } from "@/app/api/api";
+
+type AccountFormValues = {
+  firstName: string;
+  lastName: string;
+  username: string;
+  phoneNumber: string;
+};
+
+type UserResponse = {
+  id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  role: string;
+  avatar_path: string;
+  created_at: string;
+  updated_at: string;
+};
+
+function Page() {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<AccountFormValues>();
+
+  useEffect(() => {
+    const userId = localStorage.getItem("id");
+    if (userId) {
+      axiosInstance
+        .get<UserResponse>(`/user/${userId}`)
+        .then((response) => {
+          const { first_name, last_name, username, phone_number } =
+            response.data;
+          setValue("firstName", first_name);
+          setValue("lastName", last_name);
+          setValue("username", username);
+          setValue("phoneNumber", phone_number);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch user data", error);
+        });
+    }
+  }, [setValue]);
+
+  const onSubmitAccount: SubmitHandler<AccountFormValues> = (data) => {
+    console.log("Account Data:", data);
+  };
+
   return (
     <Tabs defaultValue="account" className="w-full" dir="rtl">
       <TabsList className="flex justify-start space-x-2 p-4 bg-teal-800 h-20 rounded-none">
@@ -28,77 +83,95 @@ function page() {
         value="account"
         className="p-6 bg-white dark:bg-gray-800 min-h-[calc(100vh-80px)]"
       >
-        <div className=" space-y-6">
+        <form
+          onSubmit={handleSubmit(onSubmitAccount)}
+          className="space-y-6"
+        >
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Account
+            ویرایش حساب کاربری
           </h2>
           <p className="text-gray-600 dark:text-gray-300">
-            Make changes to your account here.
+            در این قسمت می‌توانید اطلاعات کاربری خود را ویرایش کنید
           </p>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="firstName">نام</Label>
               <Input
-                id="name"
-                defaultValue="John Doe"
+                id="firstName"
+                {...register("firstName", { required: "نام الزامی است" })}
                 className="w-full"
               />
+              {errors.firstName && (
+                <span className="text-red-500">
+                  {errors.firstName.message}
+                </span>
+              )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="lastName">نام خانوادگی</Label>
+              <Input
+                id="lastName"
+                {...register("lastName", {
+                  required: "نام خانوادگی الزامی است",
+                })}
+                className="w-full"
+              />
+              {errors.lastName && (
+                <span className="text-red-500">
+                  {errors.lastName.message}
+                </span>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="username">نام کاربری</Label>
               <Input
                 id="username"
-                defaultValue="@johndoe"
+                {...register("username", {
+                  required: "نام کاربری الزامی است",
+                })}
                 className="w-full"
               />
+              {errors.username && (
+                <span className="text-red-500">
+                  {errors.username.message}
+                </span>
+              )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="phoneNumber">شماره تماس</Label>
               <Input
-                id="email"
-                type="email"
-                defaultValue="john@example.com"
+                id="phoneNumber"
+                {...register("phoneNumber", {
+                  required: "شماره تماس الزامی است",
+                  pattern: {
+                    value: /^[0-9]+$/,
+                    message: "شماره تماس معتبر نیست",
+                  },
+                })}
                 className="w-full"
               />
+              {errors.phoneNumber && (
+                <span className="text-red-500">
+                  {errors.phoneNumber.message}
+                </span>
+              )}
             </div>
-            <Button className="w-full bg-teal-600 hover:bg-teal-600 text-white">
-              Save changes
+
+            <Button
+              type="submit"
+              className="w-full bg-teal-600 hover:bg-teal-600 text-white"
+            >
+              ویرایش و اعمال تغییرات
             </Button>
           </div>
-        </div>
+        </form>
       </TabsContent>
       <TabsContent
         value="reservationManagement"
         className="p-6 bg-white dark:bg-gray-800 min-h-[calc(100vh-80px)]"
-      >
-        <div className="max-w-2xl mx-auto space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Password
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            Change your password here.
-          </p>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="current">Current password</Label>
-              <Input id="current" type="password" className="w-full" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="new">New password</Label>
-              <Input id="new" type="password" className="w-full" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirm">Confirm new password</Label>
-              <Input id="confirm" type="password" className="w-full" />
-            </div>
-            <Button className="w-full bg-teal-700 hover:bg-teal-600 text-white">
-              Change password
-            </Button>
-          </div>
-        </div>
-      </TabsContent>
+      ></TabsContent>
     </Tabs>
   );
 }
 
-export default page;
+export default Page;

@@ -52,11 +52,11 @@ export default function LoginPage({
       localStorage.setItem("token", response.data.access_token);
       localStorage.setItem("userName", response.data.userInfo.username);
       localStorage.setItem("id", response.data.userInfo.id.toString());
+      localStorage.setItem("role", response.data.userInfo.role);
       if (response.status === 200) {
         toast.success("ورود به حساب با موفقیت انجام شد");
         setTimeout(() => {
-          const role = "user";
-          if (role === "user") {
+          if (response.data.userInfo.role === "User") {
             router.push("/user");
           } else {
             router.push("/admin");
