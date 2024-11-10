@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { axiosInstance } from "@/app/api/api";
 import toast from "react-hot-toast";
 import Avatar from "react-avatar-edit";
+import { Card } from "@/components/ui/card";
 
 type AccountFormValues = {
   firstName: string;
@@ -40,9 +41,12 @@ function Page() {
     register,
     handleSubmit,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<AccountFormValues>();
   const [preview, setPreview] = useState<string | null>(null);
+  const [defaultValues, setDefaultValues] =
+    useState<AccountFormValues | null>(null);
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
@@ -59,6 +63,14 @@ function Page() {
             phone_number,
             avatar_path,
           } = response.data;
+          const initialValues = {
+            firstName: first_name,
+            lastName: last_name,
+            username: username,
+            phoneNumber: phone_number,
+            avatar: avatar_path,
+          };
+          setDefaultValues(initialValues);
           setValue("firstName", first_name);
           setValue("lastName", last_name);
           setValue("username", username);
@@ -76,16 +88,30 @@ function Page() {
     data
   ) => {
     const userId = localStorage.getItem("id");
-    if (userId) {
+    if (userId && defaultValues) {
       try {
-        await axiosInstance.put(`/user/${userId}`, {
-          first_name: data.firstName,
-          last_name: data.lastName,
-          username: data.username,
-          phone_number: data.phoneNumber,
-          avatar_path: preview,
-        });
-        toast.success("ویرایش کاربر با موفقیت صورت گرفت");
+        const updatedData: Partial<UserResponse> = {};
+        const currentValues = getValues();
+
+        if (currentValues.firstName !== defaultValues.firstName) {
+          updatedData.first_name = currentValues.firstName;
+        }
+        if (currentValues.lastName !== defaultValues.lastName) {
+          updatedData.last_name = currentValues.lastName;
+        }
+        if (currentValues.username !== defaultValues.username) {
+          updatedData.username = currentValues.username;
+        }
+        if (currentValues.phoneNumber !== defaultValues.phoneNumber) {
+          updatedData.phone_number = currentValues.phoneNumber;
+        }
+
+        if (Object.keys(updatedData).length > 0) {
+          await axiosInstance.put(`/user/${userId}`, updatedData);
+          toast.success("ویرایش کاربر با موفقیت صورت گرفت");
+        } else {
+          toast("هیچ تغییری اعمال نشد");
+        }
       } catch (error) {
         console.error("Failed to update user data", error);
         toast.error("ویرایش اطلاعات با خطا مواجه شد");
@@ -111,98 +137,103 @@ function Page() {
       </TabsList>
       <TabsContent
         value="account"
-        className="p-6 bg-white dark:bg-gray-800 min-h-[calc(100vh-80px)]"
+        className="p-6 flex justify-center items-center bg-teal-100 mt-0"
       >
-        <form
-          onSubmit={handleSubmit(onSubmitAccount)}
-          className="space-y-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            ویرایش حساب کاربری
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300">
-            در این قسمت می‌توانید اطلاعات کاربری خود را ویرایش کنید
-          </p>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="avatar">تصویر پروفایل</Label>
-              <Avatar
-                width={390}
-                height={295}
-                src={preview || undefined}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="firstName">نام</Label>
-              <Input
-                id="firstName"
-                {...register("firstName", { required: "نام الزامی است" })}
-                className="w-full"
-              />
-              {errors.firstName && (
-                <span className="text-red-500">
-                  {errors.firstName.message}
-                </span>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lastName">نام خانوادگی</Label>
-              <Input
-                id="lastName"
-                {...register("lastName", {
-                  required: "نام خانوادگی الزامی است",
-                })}
-                className="w-full"
-              />
-              {errors.lastName && (
-                <span className="text-red-500">
-                  {errors.lastName.message}
-                </span>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="username">نام کاربری</Label>
-              <Input
-                id="username"
-                {...register("username", {
-                  required: "نام کاربری الزامی است",
-                })}
-                className="w-full"
-              />
-              {errors.username && (
-                <span className="text-red-500">
-                  {errors.username.message}
-                </span>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phoneNumber">شماره تماس</Label>
-              <Input
-                id="phoneNumber"
-                {...register("phoneNumber", {
-                  required: "شماره تماس الزامی است",
-                  pattern: {
-                    value: /^[0-9]+$/,
-                    message: "شماره تماس معتبر نیست",
-                  },
-                })}
-                className="w-full"
-              />
-              {errors.phoneNumber && (
-                <span className="text-red-500">
-                  {errors.phoneNumber.message}
-                </span>
-              )}
-            </div>
+        <Card className="w-full max-w-3xl ml-auto p-6 bg-white relative z-10 shadow-xl rounded-lg">
+          <form
+            onSubmit={handleSubmit(onSubmitAccount)}
+            className="space-y-6"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 ">
+              ویرایش حساب کاربری
+            </h2>
+            <p className="text-gray-600">
+              در این قسمت می‌توانید اطلاعات کاربری خود را ویرایش کنید
+            </p>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="avatar">تصویر پروفایل</Label>
+                <Avatar
+                  width={300}
+                  height={100}
+                  src={preview || undefined}
+                  label="انتخاب کنید"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="firstName">نام</Label>
+                <Input
+                  id="firstName"
+                  {...register("firstName", {
+                    required: "نام الزامی است",
+                  })}
+                  className="w-full"
+                />
+                {errors.firstName && (
+                  <span className="text-red-500">
+                    {errors.firstName.message}
+                  </span>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">نام خانوادگی</Label>
+                <Input
+                  id="lastName"
+                  {...register("lastName", {
+                    required: "نام خانوادگی الزامی است",
+                  })}
+                  className="w-full"
+                />
+                {errors.lastName && (
+                  <span className="text-red-500">
+                    {errors.lastName.message}
+                  </span>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="username">نام کاربری</Label>
+                <Input
+                  id="username"
+                  {...register("username", {
+                    required: "نام کاربری الزامی است",
+                  })}
+                  className="w-full"
+                />
+                {errors.username && (
+                  <span className="text-red-500">
+                    {errors.username.message}
+                  </span>
+                )}
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phoneNumber">شماره تماس</Label>
+                <Input
+                  id="phoneNumber"
+                  {...register("phoneNumber", {
+                    required: "شماره تماس الزامی است",
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: "شماره تماس معتبر نیست",
+                    },
+                  })}
+                  className="w-full"
+                />
+                {errors.phoneNumber && (
+                  <span className="text-red-500">
+                    {errors.phoneNumber.message}
+                  </span>
+                )}
+              </div>
 
-            <Button
-              type="submit"
-              className="w-full bg-teal-600 hover:bg-teal-600 text-white"
-            >
-              ویرایش و اعمال تغییرات
-            </Button>
-          </div>
-        </form>
+              <Button
+                type="submit"
+                className="w-1/3 ml-0 bg-teal-600 hover:bg-teal-700 text-white rounded-md"
+              >
+                ویرایش و اعمال تغییرات
+              </Button>
+            </div>
+          </form>
+        </Card>
       </TabsContent>
       <TabsContent
         value="reservationManagement"
