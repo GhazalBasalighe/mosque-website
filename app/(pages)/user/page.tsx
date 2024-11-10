@@ -22,7 +22,6 @@ type AccountFormValues = {
   lastName: string;
   username: string;
   phoneNumber: string;
-  avatar: string;
 };
 
 type UserResponse = {
@@ -48,6 +47,7 @@ function Page() {
   const [preview, setPreview] = useState<string | null>(null);
   const [defaultValues, setDefaultValues] =
     useState<AccountFormValues | null>(null);
+  const [avatarFile, setAvatarFile] = useState<string | null>(null);
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
@@ -69,14 +69,16 @@ function Page() {
             lastName: last_name,
             username: username,
             phoneNumber: phone_number,
-            avatar: avatar_path,
           };
           setDefaultValues(initialValues);
           setValue("firstName", first_name);
           setValue("lastName", last_name);
           setValue("username", username);
           setValue("phoneNumber", phone_number);
-          setPreview(avatar_path);
+          if (avatar_path) {
+            setPreview(avatar_path);
+            setAvatarFile(avatar_path);
+          }
         } catch (error) {
           console.error("Failed to fetch user data", error);
           toast.error("خطایی در بارگزاری اولیه مقادیر به وجود آمد");
@@ -84,6 +86,31 @@ function Page() {
       })();
     }
   }, [setValue]);
+
+  const uploadAvatar = async (userId: string, avatarData: string) => {
+    try {
+      const base64Response = await fetch(avatarData);
+      const blob = await base64Response.blob();
+
+      const formData = new FormData();
+      formData.append("avatar", blob, "avatar.png");
+
+      await axiosInstance.patch(
+        `/user/update-avatar/${userId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      toast.success("تصویر پروفایل با موفقیت بروزرسانی شد");
+    } catch (error) {
+      console.error("Failed to upload avatar", error);
+      toast.error("آپلود تصویر پروفایل با خطا مواجه شد");
+    }
+  };
 
   const onSubmitAccount: SubmitHandler<AccountFormValues> = async (
     data
@@ -107,10 +134,18 @@ function Page() {
           updatedData.phone_number = currentValues.phoneNumber;
         }
 
+        // Handle profile updates
         if (Object.keys(updatedData).length > 0) {
           await axiosInstance.put(`/user/${userId}`, updatedData);
           toast.success("ویرایش کاربر با موفقیت صورت گرفت");
-        } else {
+        }
+
+        // Handle avatar upload if there's a new avatar
+        if (avatarFile) {
+          await uploadAvatar(userId, avatarFile);
+        }
+
+        if (Object.keys(updatedData).length === 0 && !avatarFile) {
           toast("هیچ تغییری اعمال نشد");
         }
       } catch (error) {
@@ -160,7 +195,7 @@ function Page() {
             onSubmit={handleSubmit(onSubmitAccount)}
             className="space-y-6"
           >
-            <h2 className="text-2xl font-bold text-gray-900 ">
+            <h2 className="text-2xl font-bold text-gray-900">
               ویرایش حساب کاربری
             </h2>
             <p className="text-gray-600">
@@ -174,6 +209,8 @@ function Page() {
                   height={100}
                   src={preview || undefined}
                   label="انتخاب کنید"
+                  onClose={() => setPreview(null)}
+                  onCrop={(croppedImage) => setAvatarFile(croppedImage)}
                 />
               </div>
               <div className="space-y-2">
