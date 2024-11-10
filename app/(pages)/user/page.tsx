@@ -15,6 +15,7 @@ import { axiosInstance } from "@/app/api/api";
 import toast from "react-hot-toast";
 import Avatar from "react-avatar-edit";
 import { Card } from "@/components/ui/card";
+import Image from "next/image";
 
 type AccountFormValues = {
   firstName: string;
@@ -137,8 +138,23 @@ function Page() {
       </TabsList>
       <TabsContent
         value="account"
-        className="p-6 flex justify-center items-center bg-teal-100 mt-0"
+        className="p-6 flex justify-center items-center bg-teal-100 mt-0 relative"
       >
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute top-[2%] left-[5%] opacity-70"
+          width={200}
+          height={200}
+        />
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute top-[20%] left-[15%] opacity-60"
+          width={100}
+          height={100}
+        />
+
         <Card className="w-full max-w-3xl ml-auto p-6 bg-white relative z-10 shadow-xl rounded-lg">
           <form
             onSubmit={handleSubmit(onSubmitAccount)}
@@ -225,12 +241,14 @@ function Page() {
                 )}
               </div>
 
-              <Button
-                type="submit"
-                className="w-1/3 ml-0 bg-teal-600 hover:bg-teal-700 text-white rounded-md"
-              >
-                ویرایش و اعمال تغییرات
-              </Button>
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  className="bg-teal-600 hover:bg-teal-700 text-white rounded-md"
+                >
+                  ویرایش و اعمال تغییرات
+                </Button>
+              </div>
             </div>
           </form>
         </Card>
