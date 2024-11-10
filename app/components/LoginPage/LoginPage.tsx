@@ -15,6 +15,14 @@ interface IFormInput {
 
 interface ILoginResponse {
   access_token: string;
+  userInfo: {
+    id: number;
+    username: string;
+    first_name: string;
+    last_name: string;
+    phone_number: string;
+    role: string;
+  };
 }
 
 export default function LoginPage({
@@ -42,6 +50,8 @@ export default function LoginPage({
         }
       );
       localStorage.setItem("token", response.data.access_token);
+      localStorage.setItem("userName", response.data.userInfo.username);
+      localStorage.setItem("id", response.data.userInfo.id.toString());
       if (response.status === 200) {
         toast.success("ورود به حساب با موفقیت انجام شد");
         setTimeout(() => {
