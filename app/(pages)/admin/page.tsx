@@ -17,6 +17,15 @@ import Avatar from "react-avatar-edit";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 type AccountFormValues = {
   firstName: string;
@@ -37,6 +46,12 @@ type UserResponse = {
   updated_at: string;
 };
 
+type UsersListResponse = {
+  total: number;
+  page: number;
+  data: UserResponse[];
+};
+
 function Page() {
   const {
     register,
@@ -53,6 +68,7 @@ function Page() {
   const [profilePhoto, setProfilePhoto] = useState<string>(
     "/images/default-pfp.webp"
   );
+  const [users, setUsers] = useState<UserResponse[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -89,6 +105,40 @@ function Page() {
       })();
     }
   }, [setValue]);
+
+  useEffect(() => {
+    getProfilePhoto();
+    fetchUsers();
+  }, []);
+
+  const getProfilePhoto = async () => {
+    const userId = localStorage.getItem("id");
+    if (userId) {
+      try {
+        const response = await axiosInstance.get(
+          `/user/avatar/${userId}`,
+          {
+            responseType: "blob",
+          }
+        );
+        const imageUrl = URL.createObjectURL(response.data);
+        setProfilePhoto(imageUrl);
+      } catch (error) {
+        console.error("Error fetching profile photo", error);
+        setProfilePhoto("/images/default-pfp.webp");
+      }
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axiosInstance.get<UsersListResponse>("/user");
+      setUsers(response.data.data);
+    } catch (error) {
+      console.error("Failed to fetch users", error);
+      toast.error("بارگزاری لیست کاربران با خطا مواجه شد");
+    }
+  };
 
   const uploadAvatar = async (userId: string, avatarData: string) => {
     try {
@@ -158,29 +208,6 @@ function Page() {
     }
   };
 
-  const getProfilePhoto = async () => {
-    const userId = localStorage.getItem("id");
-    if (userId) {
-      try {
-        const response = await axiosInstance.get(
-          `/user/avatar/${userId}`,
-          {
-            responseType: "blob",
-          }
-        );
-        const imageUrl = URL.createObjectURL(response.data);
-        setProfilePhoto(imageUrl);
-      } catch (error) {
-        console.error("Error fetching profile photo", error);
-        setProfilePhoto("/images/default-pfp.webp");
-      }
-    }
-  };
-
-  useEffect(() => {
-    getProfilePhoto();
-  }, []);
-
   const logout = () => {
     localStorage.clear();
     toast.success("خروج با موفقیت انجام شد");
@@ -198,10 +225,22 @@ function Page() {
             حساب کاربری
           </TabsTrigger>
           <TabsTrigger
+            value="users"
+            className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
+          >
+            مدیریت کاربران
+          </TabsTrigger>
+          <TabsTrigger
             value="reservationManagement"
             className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
           >
-            مدیریت رزروها
+            رزروها
+          </TabsTrigger>
+          <TabsTrigger
+            value="comments"
+            className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
+          >
+            کامنت‌ها
           </TabsTrigger>
         </TabsList>
         <div className="flex items-center gap-4 space-x-4">
@@ -341,6 +380,87 @@ function Page() {
               </div>
             </div>
           </form>
+        </Card>
+      </TabsContent>
+      <TabsContent
+        value="reservationManagement"
+        className="p-6 bg-white dark:bg-gray-800 min-h-[calc(100vh-80px)]"
+      ></TabsContent>
+      <TabsContent
+        value="users"
+        className="p-6 bg-teal-100 mt-0 relative h-[81vh]"
+      >
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute bottom-[2%] left-[2%] opacity-70"
+          width={200}
+          height={200}
+        />
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute bottom-[20%] left-[13%] opacity-60"
+          width={100}
+          height={100}
+        />
+        <Card className="w-full max-w-[90%] ml-auto p-6 bg-white/80 relative z-10 shadow-xl rounded-lg">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            لیست کاربران
+          </h2>
+          <div className="overflow-x-auto">
+            <Table className="border-none rounded-2xl">
+              <TableHeader className="bg-teal-100 rounded-t-lg hover:bg-teal-200">
+                <TableRow>
+                  <TableHead className="text-start p-4">
+                    نام کاربری
+                  </TableHead>
+                  <TableHead className="text-start p-4">نام</TableHead>
+                  <TableHead className="text-start p-4">
+                    نام خانوادگی
+                  </TableHead>
+                  <TableHead className="text-start p-4">
+                    شماره تماس
+                  </TableHead>
+                  <TableHead className="text-start p-4">نقش</TableHead>
+                  <TableHead className="text-start p-4">
+                    تاریخ ایجاد
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {users.map((user) => (
+                  <TableRow
+                    key={user.id}
+                    className="border-b last:border-none"
+                  >
+                    <TableCell className="p-4 text-start">
+                      {user.username}
+                    </TableCell>
+                    <TableCell className="p-4 text-start">
+                      {user.first_name}
+                    </TableCell>
+                    <TableCell className="p-4 text-start">
+                      {user.last_name}
+                    </TableCell>
+                    <TableCell className="p-4 text-start">
+                      {convertToPersianDigits(user.phone_number)}
+                    </TableCell>
+                    <TableCell className="p-4 text-start">
+                      {user.role}
+                    </TableCell>
+                    <TableCell className="p-4 text-start">
+                      {convertToPersianDigits(
+                        new Date(user.created_at).toLocaleDateString(
+                          "fa-IR"
+                        )
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
       </TabsContent>
       <TabsContent
