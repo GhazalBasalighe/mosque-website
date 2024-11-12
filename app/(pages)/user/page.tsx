@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import Avatar from "react-avatar-edit";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type AccountFormValues = {
   firstName: string;
@@ -52,6 +53,7 @@ function Page() {
   const [profilePhoto, setProfilePhoto] = useState<string>(
     "/images/default-pfp.webp"
   );
+  const router = useRouter();
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
@@ -179,6 +181,12 @@ function Page() {
     getProfilePhoto();
   }, []);
 
+  const logout = () => {
+    localStorage.clear();
+    toast.success("خروج با موفقیت انجام شد");
+    router.replace("/auth");
+  };
+
   return (
     <Tabs defaultValue="account" className="w-full" dir="rtl">
       <div className="flex items-center justify-between p-4 bg-teal-800 h-20 rounded-none">
@@ -207,6 +215,12 @@ function Page() {
           {username && (
             <span className="text-white font-bold">سلام {username} !</span>
           )}
+          <Button
+            onClick={logout}
+            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+          >
+            خروج
+          </Button>
         </div>
       </div>
       <TabsContent
