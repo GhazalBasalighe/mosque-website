@@ -65,8 +65,8 @@ export default function LoginPage({
       }
     } catch (error) {
       console.error("Error during login:", error);
+      toast.error("نام کاربری یا رمز عبور اشتباه می‌باشد");
     }
-    console.log("Login data", data);
   };
 
   return (
