@@ -57,7 +57,6 @@ function AdminDashboard() {
     "/images/default-pfp.webp"
   );
   const [users, setUsers] = useState<UserResponse[]>([]);
-  const router = useRouter();
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
@@ -191,10 +190,10 @@ function AdminDashboard() {
     }
   };
 
-  const logout = () => {
-    localStorage.clear();
-    toast.success("خروج با موفقیت انجام شد");
-    router.replace("/auth");
+  const removeUserFromList = (userId: number) => {
+    setUsers((prevUsers) =>
+      prevUsers.filter((user) => user.id !== userId)
+    );
   };
 
   return (
@@ -350,7 +349,7 @@ function AdminDashboard() {
             لیست کاربران
           </h2>
           <div className="overflow-x-auto">
-            <UserList users={users} />
+            <UserList users={users} onDelete={removeUserFromList} />
           </div>
         </Card>
       </TabsContent>
