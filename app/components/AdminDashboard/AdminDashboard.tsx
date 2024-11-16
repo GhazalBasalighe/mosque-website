@@ -14,6 +14,7 @@ import toast from "react-hot-toast";
 import { TabsNavigation } from "./TabsNavigation/TabsNavigation";
 import { UserAvatar } from "./UserAvatar/UserAvatar";
 import { UserList } from "./UserList/UserList";
+import AvailableTimes from "./AvailableTimes/AvailableTimes";
 
 type AccountFormValues = {
   firstName: string;
@@ -325,7 +326,9 @@ function AdminDashboard() {
       <TabsContent
         value="reservationManagement"
         className="p-6 bg-white dark:bg-gray-800 min-h-[calc(100vh-80px)]"
-      ></TabsContent>
+      >
+        <AvailableTimes />
+      </TabsContent>
       <TabsContent
         value="users"
         className="p-6 bg-teal-100 mt-0 relative h-[81vh]"
