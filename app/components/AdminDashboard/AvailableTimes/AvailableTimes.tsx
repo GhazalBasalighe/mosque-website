@@ -5,14 +5,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
 import persian from "react-date-object/calendars/persian";
@@ -21,23 +13,15 @@ import type { Value } from "react-multi-date-picker";
 import DatePicker from "react-multi-date-picker";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import "react-multi-date-picker/styles/colors/teal.css";
-import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
 import toast from "react-hot-toast";
 import DeleteConfirmDialog from "../../DeleteConfirmDialog/DeleteConfirmDialog";
-import { Trash } from "lucide-react";
+import AvailableTimesTable, {
+  AvailableTime,
+} from "../../AvailableTimesTable/AvailableTimesTable";
 
 interface TimeRange {
   startTime: Value;
   endTime: Value;
-}
-
-interface AvailableTime {
-  id: number;
-  start_date: string;
-  end_date: string;
-  created_at: string;
-  price: number;
-  description: string;
 }
 
 const AvailableTimes = () => {
@@ -55,7 +39,6 @@ const AvailableTimes = () => {
     null
   );
 
-  // Fetch available times data
   const fetchAvailableTimes = async () => {
     try {
       const response = await axiosInstance.get("/available-time");
@@ -69,19 +52,16 @@ const AvailableTimes = () => {
     fetchAvailableTimes();
   }, []);
 
-  // Format number with commas
   const formatNumber = (value: string) => {
     const numbers = value.replace(/[^\d]/g, "");
     return numbers.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
-  // Handle price input change
   const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formattedPrice = formatNumber(e.target.value);
     setPrice(formattedPrice);
   };
 
-  // Helper function to handle time changes
   const handleTimeChange = (
     value: Value,
     type: "startTime" | "endTime"
@@ -103,7 +83,8 @@ const AvailableTimes = () => {
             .slice(0, 19)
         : "";
       const endDate = timeRange.endTime
-        ? timeRange.endTime //@ts-ignore
+        ? timeRange.endTime
+            //@ts-ignore
             .toDate()
             .toISOString()
             .replace("T", " ")
@@ -118,10 +99,9 @@ const AvailableTimes = () => {
       });
       fetchAvailableTimes();
       toast.success("با موفقیت ثبت شد");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error);
-      //@ts-ignore
-      if (error.response.status === 403) {
+      if (error.response?.status === 403) {
         toast.error("تداخل بازه زمانی با بازه های زمانی موجود");
       }
     }
@@ -138,7 +118,6 @@ const AvailableTimes = () => {
     }
   };
 
-  // Common DatePicker props
   const datePickerProps = {
     calendar: persian,
     locale: persian_fa,
@@ -152,6 +131,11 @@ const AvailableTimes = () => {
       />,
     ],
     render: <Input />,
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setSelectedTimeId(id);
+    setIsDialogOpen(true);
   };
 
   return (
@@ -226,61 +210,10 @@ const AvailableTimes = () => {
         </CardContent>
       </Card>
 
-      <Card className="w-full rtl z-30 bg-white/90 col-span-2">
-        <CardHeader>
-          <CardTitle className="text-right font-bold text-2xl">
-            لیست زمان‌های موجود
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table className="border-none rounded-2xl">
-            <TableHeader className="bg-teal-100 rounded-t-lg hover:bg-teal-200">
-              <TableRow>
-                <TableHead className="text-start p-4">ساعت شروع</TableHead>
-                <TableHead className="text-start p-4">
-                  ساعت پایان
-                </TableHead>
-                <TableHead className="text-start p-4">قیمت</TableHead>
-                <TableHead className="text-start p-4">توضیحات</TableHead>
-                <TableHead className="text-start p-4">عملیات</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {availableTimes.map((time) => (
-                <TableRow
-                  key={time.id}
-                  className="border-b last:border-none"
-                >
-                  <TableCell className="p-4 text-start">
-                    {new Date(time.start_date).toLocaleString("fa-IR")}
-                  </TableCell>
-                  <TableCell className="p-4 text-start">
-                    {new Date(time.end_date).toLocaleString("fa-IR")}
-                  </TableCell>
-                  <TableCell className="p-4 text-start">
-                    {convertToPersianDigits(time.price.toLocaleString())}
-                  </TableCell>
-                  <TableCell className="p-4 text-start">
-                    {time.description}
-                  </TableCell>
-                  <TableCell className="p-4 text-start relative group">
-                    {/* Delete icon */}
-                    <button
-                      onClick={() => {
-                        setSelectedTimeId(time.id);
-                        setIsDialogOpen(true);
-                      }}
-                      className="invisible group-hover:visible text-red-600 hover:text-red-800"
-                    >
-                      <Trash />
-                    </button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <AvailableTimesTable
+        availableTimes={availableTimes}
+        onDeleteClick={handleDeleteClick}
+      />
 
       <DeleteConfirmDialog
         isOpen={isDialogOpen}

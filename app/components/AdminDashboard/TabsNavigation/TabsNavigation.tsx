@@ -16,6 +16,12 @@ export function TabsNavigation() {
         مدیریت کاربران
       </TabsTrigger>
       <TabsTrigger
+        value="availableTimes"
+        className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
+      >
+        بازه‌های زمانی موجود
+      </TabsTrigger>
+      <TabsTrigger
         value="reservationManagement"
         className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
       >

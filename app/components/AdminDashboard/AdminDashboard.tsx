@@ -6,15 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Avatar from "react-avatar-edit";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import AvailableTimes from "./AvailableTimes/AvailableTimes";
 import { TabsNavigation } from "./TabsNavigation/TabsNavigation";
 import { UserAvatar } from "./UserAvatar/UserAvatar";
 import { UserList } from "./UserList/UserList";
-import AvailableTimes from "./AvailableTimes/AvailableTimes";
 
 type AccountFormValues = {
   firstName: string;
@@ -325,6 +324,26 @@ function AdminDashboard() {
       </TabsContent>
       <TabsContent
         value="reservationManagement"
+        className="p-6 bg-teal-100 mt-0 relative h-[81vh]"
+      >
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute bottom-[2%] left-[2%] opacity-70"
+          width={200}
+          height={200}
+        />
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute bottom-[20%] left-[13%] opacity-60"
+          width={100}
+          height={100}
+        />
+        <AvailableTimes />
+      </TabsContent>
+      <TabsContent
+        value="availableTimes"
         className="p-6 bg-teal-100 mt-0 relative h-[81vh]"
       >
         <Image
