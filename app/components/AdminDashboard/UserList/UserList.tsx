@@ -1,4 +1,12 @@
-import { useState } from "react";
+import { axiosInstance } from "@/app/api/api";
+import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -7,21 +15,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UserResponse } from "../AdminDashboard";
-import { axiosInstance } from "@/app/api/api";
-import toast from "react-hot-toast";
-import { Trash } from "lucide-react";
-import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { Trash } from "lucide-react";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { UserResponse } from "../AdminDashboard";
 
 export function UserList({
   users,
