@@ -325,8 +325,22 @@ function AdminDashboard() {
       </TabsContent>
       <TabsContent
         value="reservationManagement"
-        className="p-6 bg-white dark:bg-gray-800 min-h-[calc(100vh-80px)]"
+        className="p-6 bg-teal-100 mt-0 relative h-[81vh]"
       >
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute bottom-[2%] left-[2%] opacity-70"
+          width={200}
+          height={200}
+        />
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute bottom-[20%] left-[13%] opacity-60"
+          width={100}
+          height={100}
+        />
         <AvailableTimes />
       </TabsContent>
       <TabsContent

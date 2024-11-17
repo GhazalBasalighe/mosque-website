@@ -50,9 +50,9 @@ const AvailableTimes = () => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto rtl">
+    <Card className="w-full max-w-md rtl">
       <CardHeader>
-        <CardTitle className="text-right">
+        <CardTitle className="text-right font-bold text-2xl">
           انتخاب بازه‌های زمانی رزرو
         </CardTitle>
       </CardHeader>
