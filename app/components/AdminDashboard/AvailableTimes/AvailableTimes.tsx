@@ -23,6 +23,8 @@ import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import "react-multi-date-picker/styles/colors/teal.css";
 import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
 import toast from "react-hot-toast";
+import DeleteConfirmDialog from "../../DeleteConfirmDialog/DeleteConfirmDialog";
+import { Trash } from "lucide-react";
 
 interface TimeRange {
   startTime: Value;
@@ -47,6 +49,10 @@ const AvailableTimes = () => {
   const [price, setPrice] = useState<string>("");
   const [availableTimes, setAvailableTimes] = useState<AvailableTime[]>(
     []
+  );
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedTimeId, setSelectedTimeId] = useState<number | null>(
+    null
   );
 
   // Fetch available times data
@@ -104,13 +110,12 @@ const AvailableTimes = () => {
             .slice(0, 19)
         : "";
 
-      const response = await axiosInstance.post("/available-time", {
+      await axiosInstance.post("/available-time", {
         start_date: startDate,
         end_date: endDate,
         price: parseInt(price.replace(/,/g, "")),
         description: description,
       });
-      console.log("Response:", response.data);
       fetchAvailableTimes();
       toast.success("با موفقیت ثبت شد");
     } catch (error) {
@@ -119,6 +124,17 @@ const AvailableTimes = () => {
       if (error.response.status === 403) {
         toast.error("تداخل بازه زمانی با بازه های زمانی موجود");
       }
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await axiosInstance.delete(`/available-time/${id}`);
+      fetchAvailableTimes();
+      toast.success("بازه زمانی با موفقیت حذف شد");
+    } catch (error) {
+      console.error("Error deleting time:", error);
+      toast.error("خطا در حذف بازه زمانی");
     }
   };
 
@@ -210,7 +226,7 @@ const AvailableTimes = () => {
         </CardContent>
       </Card>
 
-      <Card className="w-full rtl z-30 bg-white/90 col-span-2 ">
+      <Card className="w-full rtl z-30 bg-white/90 col-span-2">
         <CardHeader>
           <CardTitle className="text-right font-bold text-2xl">
             لیست زمان‌های موجود
@@ -226,6 +242,7 @@ const AvailableTimes = () => {
                 </TableHead>
                 <TableHead className="text-start p-4">قیمت</TableHead>
                 <TableHead className="text-start p-4">توضیحات</TableHead>
+                <TableHead className="text-start p-4">عملیات</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -246,12 +263,36 @@ const AvailableTimes = () => {
                   <TableCell className="p-4 text-start">
                     {time.description}
                   </TableCell>
+                  <TableCell className="p-4 text-start relative group">
+                    {/* Delete icon */}
+                    <button
+                      onClick={() => {
+                        setSelectedTimeId(time.id);
+                        setIsDialogOpen(true);
+                      }}
+                      className="invisible group-hover:visible text-red-600 hover:text-red-800"
+                    >
+                      <Trash />
+                    </button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
+
+      <DeleteConfirmDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onConfirm={() => {
+          if (selectedTimeId) {
+            handleDelete(selectedTimeId);
+            setSelectedTimeId(null);
+            setIsDialogOpen(false);
+          }
+        }}
+      />
     </div>
   );
 };

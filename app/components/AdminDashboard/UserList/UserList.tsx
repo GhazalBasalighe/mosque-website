@@ -1,12 +1,5 @@
 import { axiosInstance } from "@/app/api/api";
 import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -15,10 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DialogDescription } from "@radix-ui/react-dialog";
 import { Trash } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import DeleteConfirmDialog from "../../DeleteConfirmDialog/DeleteConfirmDialog";
 import { UserResponse } from "../AdminDashboard";
 
 export function UserList({
@@ -114,22 +107,11 @@ export function UserList({
       </Table>
 
       {/* Confirmation Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
-          <DialogHeader></DialogHeader>
-          <DialogDescription>
-            <p>آیا مطمئن هستید که می‌خواهید این کاربر را حذف کنید؟</p>
-          </DialogDescription>
-          <DialogFooter className="gap-2">
-            <Button variant="destructive" onClick={handleDeleteConfirm}>
-              حذف
-            </Button>
-            <Button variant="default" onClick={closeDeleteDialog}>
-              انصراف
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteConfirmDialog
+        isOpen={isDialogOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDeleteConfirm}
+      />
     </>
   );
 }
