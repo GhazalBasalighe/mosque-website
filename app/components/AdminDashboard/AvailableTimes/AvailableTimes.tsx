@@ -11,6 +11,7 @@ import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
 import "react-multi-date-picker/styles/colors/teal.css";
+import { Input } from "@/components/ui/input";
 
 interface TimeRange {
   startTime: Value;
@@ -47,6 +48,7 @@ const AvailableTimes = () => {
         style={{ minWidth: "100px" }}
       />,
     ],
+    render: <Input />,
   };
 
   return (
