@@ -25,24 +25,21 @@ const Reservations = () => {
   useEffect(() => {
     fetchReservations();
   }, []);
+  {
+    /* <DeleteConfirmDialog
+    isOpen={isDialogOpen}
+    onClose={() => setIsDialogOpen(false)}
+    onConfirm={() => {
+      if (selectedReservationId) {
+        handleDelete(selectedReservationId);
+        setSelectedReservationId(null);
+        setIsDialogOpen(false);
+      }
+    }}
+  /> */
+  }
 
-  return (
-    <div>
-      <ReservationsTable reservations={reservations} />
-
-      {/* <DeleteConfirmDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        onConfirm={() => {
-          if (selectedReservationId) {
-            handleDelete(selectedReservationId);
-            setSelectedReservationId(null);
-            setIsDialogOpen(false);
-          }
-        }}
-      /> */}
-    </div>
-  );
+  return <ReservationsTable reservations={reservations} />;
 };
 
 export default Reservations;

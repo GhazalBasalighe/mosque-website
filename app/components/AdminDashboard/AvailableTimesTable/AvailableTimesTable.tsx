@@ -46,75 +46,81 @@ const AvailableTimesTable = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Table className="border-none rounded-2xl">
-          <TableHeader className="bg-teal-100 rounded-t-lg hover:bg-teal-200">
-            <TableRow>
-              <TableHead className="text-start p-4">ساعت شروع</TableHead>
-              <TableHead className="text-start p-4">ساعت پایان</TableHead>
-              <TableHead className="text-start p-4">قیمت</TableHead>
-              <TableHead className="text-start p-4">توضیحات</TableHead>
-              <TableHead className="text-start p-4">وضعیت</TableHead>
-              <TableHead className="text-start p-4">عملیات</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {availableTimes.map((time) => (
-              <TableRow
-                key={time.id}
-                className="border-b last:border-none"
-              >
-                <TableCell className="p-4 text-start">
-                  {new Date(time.start_date).toLocaleString("fa-IR")}
-                </TableCell>
-                <TableCell className="p-4 text-start">
-                  {new Date(time.end_date).toLocaleString("fa-IR")}
-                </TableCell>
-                <TableCell className="p-4 text-start">
-                  {convertToPersianDigits(time.price.toLocaleString())}
-                </TableCell>
-                <TableCell className="p-4 text-start">
-                  {time.description}
-                </TableCell>
-                <TableCell className="p-4 text-start">
-                  <span
-                    className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
-                      time.reserved
-                        ? "bg-red-100 text-red-800"
-                        : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {time.reserved ? "رزرو شده" : "خالی"}
-                  </span>
-                </TableCell>
-                <TableCell className="p-4 text-start relative group">
-                  <div className="invisible group-hover:visible flex gap-2">
-                    <button
-                      onClick={() => onEditClick(time)}
-                      className="text-blue-600 hover:text-blue-800"
-                      title="ویرایش"
-                    >
-                      <Pencil size={20} />
-                    </button>
-                    <button
-                      onClick={() => onDeleteClick(time.id)}
-                      className="text-red-600 hover:text-red-800"
-                      title="حذف"
-                    >
-                      <Trash size={20} />
-                    </button>
-                    <button
-                      onClick={() => onReservationClick(time)} // Handle reservation click
-                      className="text-green-600 hover:text-green-800"
-                      title="رزرو بازه زمانی"
-                    >
-                      <CheckCircle size={20} />
-                    </button>
-                  </div>
-                </TableCell>
+        <div className="max-h-96 overflow-y-auto">
+          <Table className="border-none rounded-2xl">
+            <TableHeader className="bg-teal-100 rounded-t-lg hover:bg-teal-200">
+              <TableRow>
+                <TableHead className="text-start p-4">ساعت شروع</TableHead>
+                <TableHead className="text-start p-4">
+                  ساعت پایان
+                </TableHead>
+                <TableHead className="text-start p-4">قیمت</TableHead>
+                <TableHead className="text-start p-4">توضیحات</TableHead>
+                <TableHead className="text-start p-4">وضعیت</TableHead>
+                <TableHead className="text-start p-4">عملیات</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {availableTimes.map((time) => (
+                <TableRow
+                  key={time.id}
+                  className="border-b last:border-none"
+                >
+                  <TableCell className="p-4 text-start">
+                    {new Date(time.start_date).toLocaleString("fa-IR")}
+                  </TableCell>
+                  <TableCell className="p-4 text-start">
+                    {new Date(time.end_date).toLocaleString("fa-IR")}
+                  </TableCell>
+                  <TableCell className="p-4 text-start">
+                    {convertToPersianDigits(time.price.toLocaleString())}
+                  </TableCell>
+                  <TableCell className="p-4 text-start">
+                    {time.description}
+                  </TableCell>
+                  <TableCell className="p-4 text-start">
+                    <span
+                      className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
+                        time.reserved
+                          ? "bg-red-100 text-red-800"
+                          : "bg-green-100 text-green-800"
+                      }`}
+                    >
+                      {time.reserved ? "رزرو شده" : "خالی"}
+                    </span>
+                  </TableCell>
+                  <TableCell className="p-4 text-start relative group">
+                    <div className="invisible group-hover:visible flex gap-2">
+                      <button
+                        onClick={() => onEditClick(time)}
+                        className="text-blue-600 hover:text-blue-800"
+                        title="ویرایش"
+                      >
+                        <Pencil size={20} />
+                      </button>
+                      <button
+                        onClick={() => onDeleteClick(time.id)}
+                        className="text-red-600 hover:text-red-800"
+                        title="حذف"
+                      >
+                        <Trash size={20} />
+                      </button>
+                      {time.reserved === 0 && (
+                        <button
+                          onClick={() => onReservationClick(time)}
+                          className="text-green-600 hover:text-green-800"
+                          title="رزرو بازه زمانی"
+                        >
+                          <CheckCircle size={20} />
+                        </button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );

@@ -1,11 +1,12 @@
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/dialog"; // Adjust the import based on your structure
+import { Button } from "@/components/ui/button"; // Assuming you have a Button component
 import React from "react";
 
 interface ReservationConfirmDialogProps {
@@ -26,24 +27,24 @@ const ReservationConfirmDialog: React.FC<
           <DialogTitle className="text-lg font-bold">
             تأیید رزرو
           </DialogTitle>
-          <DialogDescription className="mt-2 text-sm text-gray-600">
-            لطفاً توضیحات رزرو را وارد کنید:
-          </DialogDescription>
         </DialogHeader>
+        <DialogDescription className="mt-2 text-sm text-gray-600">
+          لطفاً توضیحات رزرو را وارد کنید: (اختیاری)
+        </DialogDescription>
         <textarea
-          className="mt-2 w-full rounded-md border border-gray-300 p-2 focus:ring focus:ring-teal-500"
+          className="flex h-20 w-full rounded-md border border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-teal-600"
           placeholder="توضیحات..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-        <div className="mt-4 flex justify-end">
-          <Button variant="outline" onClick={onClose} className="mr-2">
+        <DialogFooter className="gap-2 mt-4 flex justify-end">
+          <Button variant="destructive" onClick={onClose}>
             انصراف
           </Button>
-          <Button onClick={onConfirm} className="bg-teal-600 text-white">
+          <Button variant="default" onClick={onConfirm}>
             رزرو
           </Button>
-        </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
