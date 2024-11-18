@@ -29,9 +29,13 @@ export interface Reservation {
 
 interface ReservationProps {
   reservations: Reservation[];
+  onDeleteClick: (reservationId: number) => void;
 }
 
-const ReservationsTable = ({ reservations }: ReservationProps) => {
+const ReservationsTable = ({
+  reservations,
+  onDeleteClick,
+}: ReservationProps) => {
   return (
     <Card className="w-full rtl relative z-30 bg-white/90">
       <CardHeader>
@@ -96,10 +100,9 @@ const ReservationsTable = ({ reservations }: ReservationProps) => {
                   <TableCell className="p-4 text-start relative group">
                     <div className="invisible group-hover:visible flex gap-2">
                       <button
-                        onClick={() => {
-                          /* Handle delete */
-                        }}
+                        onClick={() => onDeleteClick(reservation.id)}
                         className="text-red-600 hover:text-red-800"
+                        title="حذف"
                       >
                         <Trash size={20} />
                       </button>
