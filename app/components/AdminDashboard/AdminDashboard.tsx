@@ -14,6 +14,7 @@ import AvailableTimes from "./AvailableTimes/AvailableTimes";
 import { TabsNavigation } from "./TabsNavigation/TabsNavigation";
 import { UserAvatar } from "./UserAvatar/UserAvatar";
 import { UserList } from "./UserList/UserList";
+import Reservations from "./Reservations/Reservations";
 
 type AccountFormValues = {
   firstName: string;
@@ -340,7 +341,7 @@ function AdminDashboard() {
           width={100}
           height={100}
         />
-        <AvailableTimes />
+        <Reservations />
       </TabsContent>
       <TabsContent
         value="availableTimes"

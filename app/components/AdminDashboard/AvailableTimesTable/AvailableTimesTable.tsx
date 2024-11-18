@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Trash, Pencil, CheckCircle, XCircle } from "lucide-react";
+import { Trash, Pencil, CheckCircle } from "lucide-react";
 import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
 
 export interface AvailableTime {
@@ -23,21 +23,20 @@ export interface AvailableTime {
   price: number;
   description: string;
   reserved: 0 | 1;
-  reservation_id?: number;
 }
 
 interface AvailableTimesTableProps {
   availableTimes: AvailableTime[];
   onDeleteClick: (id: number) => void;
   onEditClick: (time: AvailableTime) => void;
-  onReservationToggle: (time: AvailableTime) => void;
+  onReservationClick: (time: AvailableTime) => void; // Updated to handle reservation action
 }
 
 const AvailableTimesTable = ({
   availableTimes,
   onDeleteClick,
   onEditClick,
-  onReservationToggle,
+  onReservationClick,
 }: AvailableTimesTableProps) => {
   return (
     <Card className="w-full rtl z-30 bg-white/90 col-span-2">
@@ -104,21 +103,11 @@ const AvailableTimesTable = ({
                       <Trash size={20} />
                     </button>
                     <button
-                      onClick={() => onReservationToggle(time)}
-                      className={
-                        time.reserved
-                          ? "text-yellow-600 hover:text-yellow-800"
-                          : "text-green-600 hover:text-green-800"
-                      }
-                      title={
-                        time.reserved ? "لغو رزرو" : "رزرو بازه زمانی"
-                      }
+                      onClick={() => onReservationClick(time)} // Handle reservation click
+                      className="text-green-600 hover:text-green-800"
+                      title="رزرو بازه زمانی"
                     >
-                      {time.reserved ? (
-                        <XCircle size={20} />
-                      ) : (
-                        <CheckCircle size={20} />
-                      )}
+                      <CheckCircle size={20} />
                     </button>
                   </div>
                 </TableCell>

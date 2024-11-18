@@ -17,7 +17,8 @@ import toast from "react-hot-toast";
 import DeleteConfirmDialog from "../../DeleteConfirmDialog/DeleteConfirmDialog";
 import AvailableTimesTable, {
   AvailableTime,
-} from "../../AvailableTimesTable/AvailableTimesTable";
+} from "../AvailableTimesTable/AvailableTimesTable";
+import ReservationConfirmDialog from "../ReservationConfirmDialog/ReservationConfirmDialog";
 
 interface TimeRange {
   startTime: Value;
@@ -35,9 +36,13 @@ const AvailableTimes = () => {
     []
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isReservationDialogOpen, setIsReservationDialogOpen] =
+    useState(false); // State for reservation dialog
   const [selectedTimeId, setSelectedTimeId] = useState<number | null>(
     null
   );
+  const [reservationDescription, setReservationDescription] =
+    useState<string>(""); // State for reservation description
   const [editMode, setEditMode] = useState(false);
   const [editingTimeId, setEditingTimeId] = useState<number | null>(null);
 
@@ -84,16 +89,14 @@ const AvailableTimes = () => {
 
   const handleSubmit = async () => {
     try {
-      const startDate = timeRange.startTime
-        ? //@ts-ignore
-          new Date(timeRange.startTime)
+      const startDate = timeRange.startTime //@ts-ignore
+        ? new Date(timeRange.startTime)
             .toISOString()
             .replace("T", " ")
             .slice(0, 19)
         : "";
-      const endDate = timeRange.endTime
-        ? //@ts-ignore
-          new Date(timeRange.endTime)
+      const endDate = timeRange.endTime //@ts-ignore
+        ? new Date(timeRange.endTime)
             .toISOString()
             .replace("T", " ")
             .slice(0, 19)
@@ -151,16 +154,6 @@ const AvailableTimes = () => {
     });
     setPrice(time.price.toString());
     setDescription(time.description);
-
-    try {
-      const data = {
-        price: time.price,
-        description: time.description,
-      };
-      await axiosInstance.put(`/available-time/${time.id}`, data);
-    } catch (error) {
-      console.error("Error updating time:", error);
-    }
   };
 
   const datePickerProps = {
@@ -178,7 +171,7 @@ const AvailableTimes = () => {
     render: (
       <Input
         readOnly={editMode}
-        className={`${editMode} ? cursor-not-allowed : ''`}
+        className={`${editMode ? "cursor-not-allowed" : ""}`}
       />
     ),
   };
@@ -188,34 +181,27 @@ const AvailableTimes = () => {
     setIsDialogOpen(true);
   };
 
-  const handleReservationToggle = async (time: AvailableTime) => {
+  const handleReservationClick = (time: AvailableTime) => {
+    setSelectedTimeId(time.id);
+    setIsReservationDialogOpen(true);
+  };
+
+  const handleReservation = async () => {
     try {
-      if (time.reserved) {
-        await axiosInstance.delete(
-          `/reservation/${time.reservation_id}/undo`
-        );
-        toast.success("رزرو با موفقیت لغو شد");
-      } else {
-        const response = await axiosInstance.post(
-          `/reservation/make/${time.id}`
-        );
-        time.reservation_id = response.data.reservationId;
-        toast.success("رزرو با موفقیت انجام شد");
-      }
-      setAvailableTimes((prevTimes) =>
-        prevTimes.map((t) =>
-          t.id === time.id
-            ? {
-                ...t,
-                reserved: time.reserved ? 0 : 1,
-                reservation_id: time.reservation_id,
-              }
-            : t
-        )
+      const submitData = {
+        description: reservationDescription,
+      };
+      await axiosInstance.post(
+        `/reservation/make/${selectedTimeId}`,
+        submitData
       );
+      toast.success("رزرو با موفقیت انجام شد");
+      setReservationDescription(""); // Clear the description after reservation
+      setIsReservationDialogOpen(false); // Close the dialog
+      fetchAvailableTimes(); // Refresh available times
     } catch (error) {
-      console.error("Error toggling reservation:", error);
-      toast.error("خطا در تغییر وضعیت رزرو");
+      console.error("Error making reservation:", error);
+      toast.error("خطا در انجام رزرو");
     }
   };
 
@@ -306,14 +292,12 @@ const AvailableTimes = () => {
           </div>
         </CardContent>
       </Card>
-
       <AvailableTimesTable
         availableTimes={availableTimes}
         onDeleteClick={handleDeleteClick}
         onEditClick={handleEdit}
-        onReservationToggle={handleReservationToggle}
+        onReservationClick={handleReservationClick}
       />
-
       <DeleteConfirmDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
@@ -325,6 +309,13 @@ const AvailableTimes = () => {
           }
         }}
       />
+      <ReservationConfirmDialog
+        isOpen={isReservationDialogOpen}
+        onClose={() => setIsReservationDialogOpen(false)}
+        onConfirm={handleReservation}
+        description={reservationDescription}
+        setDescription={setReservationDescription}
+      />{" "}
     </div>
   );
 };
