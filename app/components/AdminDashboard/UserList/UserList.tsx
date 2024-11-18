@@ -21,7 +21,7 @@ export function UserList({
 }: {
   users: UserResponse[];
   onDelete: (userId: number) => void;
-  onUpdateRole: (userId: number, newRole: string) => void;
+  onUpdateRole: () => void;
 }) {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -59,7 +59,7 @@ export function UserList({
     try {
       await axiosInstance.patch(`/user/role/${userId}`, { role: newRole });
       toast.success("نقش کاربر با موفقیت تغییر یافت");
-      onUpdateRole(userId, newRole);
+      onUpdateRole();
     } catch (error) {
       console.error("Failed to update user role", error);
       toast.error("تغییر نقش کاربر با خطا مواجه شد");
