@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import NewsPageClient from "./newsPageClient";
 import axios from "axios";
+import NewsPageClient from "./NewsPageClient";
 
 // Define News Type
 interface News {
