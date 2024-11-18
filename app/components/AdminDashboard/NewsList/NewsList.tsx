@@ -9,11 +9,12 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import CustomPagination from "../../Pagination/Pagination";
+import NewsDetailedCard from "../../NewsDetailedCard/NewsDetailedCard";
 
 interface News {
+  id: number;
   title: string;
   content?: string;
-  thumbnail?: string;
 }
 
 interface BlogResponse {
@@ -27,6 +28,10 @@ const NewsList = () => {
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [perPage] = useState<number>(10);
+  const [selectedBlogId, setSelectedBlogId] = useState<number | null>(
+    null
+  );
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
     fetchNews(page, perPage);
@@ -48,6 +53,16 @@ const NewsList = () => {
     setPage(newPage);
   };
 
+  const handleRowClick = (blogId: number) => {
+    setSelectedBlogId(blogId);
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    setSelectedBlogId(null);
+  };
+
   return (
     <div className="w-full rtl">
       {/* Description above the table */}
@@ -62,17 +77,15 @@ const NewsList = () => {
             <TableRow>
               <TableHead className="text-start p-4">عنوان</TableHead>
               <TableHead className="text-start p-4">محتوا</TableHead>
-              <TableHead className="text-start p-4">
-                تصویر تامنیل
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {news.length > 0 ? (
-              news.map((item, index) => (
+              news.map((item) => (
                 <TableRow
-                  key={index}
-                  className="border-b last:border-none"
+                  key={item.id}
+                  className="border-b last:border-none cursor-pointer hover:bg-gray-100"
+                  onClick={() => handleRowClick(item.id)}
                 >
                   <TableCell className="p-4 text-start">
                     {item.title}
@@ -82,22 +95,11 @@ const NewsList = () => {
                       ? `${item.content.substring(0, 50)}...`
                       : "-"}
                   </TableCell>
-                  <TableCell className="p-4 text-start">
-                    {item.thumbnail ? (
-                      <img
-                        src={item.thumbnail}
-                        alt={item.title}
-                        className="w-16 h-16 object-cover rounded"
-                      />
-                    ) : (
-                      "بدون تصویر"
-                    )}
-                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={3} className="p-4 text-center">
+                <TableCell colSpan={2} className="p-4 text-center">
                   هیچ خبری موجود نیست.
                 </TableCell>
               </TableRow>
@@ -106,13 +108,22 @@ const NewsList = () => {
         </Table>
       </div>
 
-      {/* Pagination Controls using Custom Pagination Component */}
+      {/* Pagination Controls */}
       <CustomPagination
         currentPage={page}
         totalCount={total}
         pageSize={perPage}
         onPageChange={handlePageChange}
       />
+
+      {/* Blog Detail Card as Dialog */}
+      {selectedBlogId && (
+        <NewsDetailedCard
+          blogId={selectedBlogId}
+          isOpen={isDialogOpen}
+          onClose={handleDialogClose}
+        />
+      )}
     </div>
   );
 };
