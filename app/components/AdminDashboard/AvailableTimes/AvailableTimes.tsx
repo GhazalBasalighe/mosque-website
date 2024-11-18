@@ -38,6 +38,8 @@ const AvailableTimes = () => {
   const [selectedTimeId, setSelectedTimeId] = useState<number | null>(
     null
   );
+  const [editMode, setEditMode] = useState(false);
+  const [editingTimeId, setEditingTimeId] = useState<number | null>(null);
 
   const fetchAvailableTimes = async () => {
     try {
@@ -72,33 +74,55 @@ const AvailableTimes = () => {
     }));
   };
 
+  const resetForm = () => {
+    setTimeRange({ startTime: "", endTime: "" });
+    setDescription("");
+    setPrice("");
+    setEditMode(false);
+    setEditingTimeId(null);
+  };
+
   const handleSubmit = async () => {
     try {
       const startDate = timeRange.startTime
-        ? timeRange.startTime
-            //@ts-ignore
-            .toDate()
+        ? //@ts-ignore
+          new Date(timeRange.startTime)
             .toISOString()
             .replace("T", " ")
             .slice(0, 19)
         : "";
       const endDate = timeRange.endTime
-        ? timeRange.endTime
-            //@ts-ignore
-            .toDate()
+        ? //@ts-ignore
+          new Date(timeRange.endTime)
             .toISOString()
             .replace("T", " ")
             .slice(0, 19)
         : "";
 
-      await axiosInstance.post("/available-time", {
+      const submitData = {
         start_date: startDate,
         end_date: endDate,
         price: parseInt(price.replace(/,/g, "")),
         description: description,
-      });
+      };
+      const editData = {
+        price: parseInt(price.replace(/,/g, "")),
+        description: description,
+      };
+
+      if (editMode && editingTimeId) {
+        await axiosInstance.put(
+          `/available-time/${editingTimeId}`,
+          editData
+        );
+        toast.success("با موفقیت ویرایش شد");
+      } else {
+        await axiosInstance.post("/available-time", submitData);
+        toast.success("با موفقیت ثبت شد");
+      }
+
       fetchAvailableTimes();
-      toast.success("با موفقیت ثبت شد");
+      resetForm();
     } catch (error: any) {
       console.error("Error:", error);
       if (error.response?.status === 403) {
@@ -118,6 +142,27 @@ const AvailableTimes = () => {
     }
   };
 
+  const handleEdit = async (time: AvailableTime) => {
+    setEditMode(true);
+    setEditingTimeId(time.id);
+    setTimeRange({
+      startTime: time.start_date,
+      endTime: time.end_date,
+    });
+    setPrice(time.price.toString());
+    setDescription(time.description);
+
+    try {
+      const data = {
+        price: time.price,
+        description: time.description,
+      };
+      await axiosInstance.put(`/available-time/${time.id}`, data);
+    } catch (error) {
+      console.error("Error updating time:", error);
+    }
+  };
+
   const datePickerProps = {
     calendar: persian,
     locale: persian_fa,
@@ -130,7 +175,12 @@ const AvailableTimes = () => {
         style={{ minWidth: "100px" }}
       />,
     ],
-    render: <Input />,
+    render: (
+      <Input
+        readOnly={editMode}
+        className={`${editMode} ? cursor-not-allowed : ''`}
+      />
+    ),
   };
 
   const handleDeleteClick = (id: number) => {
@@ -138,12 +188,43 @@ const AvailableTimes = () => {
     setIsDialogOpen(true);
   };
 
+  const handleReservationToggle = async (time: AvailableTime) => {
+    try {
+      if (time.reserved) {
+        await axiosInstance.delete(
+          `/reservation/${time.reservation_id}/undo`
+        );
+        toast.success("رزرو با موفقیت لغو شد");
+      } else {
+        const response = await axiosInstance.post(
+          `/reservation/make/${time.id}`
+        );
+        time.reservation_id = response.data.reservationId;
+        toast.success("رزرو با موفقیت انجام شد");
+      }
+      setAvailableTimes((prevTimes) =>
+        prevTimes.map((t) =>
+          t.id === time.id
+            ? {
+                ...t,
+                reserved: time.reserved ? 0 : 1,
+                reservation_id: time.reservation_id,
+              }
+            : t
+        )
+      );
+    } catch (error) {
+      console.error("Error toggling reservation:", error);
+      toast.error("خطا در تغییر وضعیت رزرو");
+    }
+  };
+
   return (
     <div className="grid grid-cols-3 gap-4">
       <Card className="w-full rtl">
         <CardHeader>
           <CardTitle className="text-right font-bold text-2xl">
-            انتخاب بازه‌های زمانی رزرو
+            {editMode ? "ویرایش بازه زمانی" : "انتخاب بازه‌های زمانی رزرو"}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -171,10 +252,13 @@ const AvailableTimes = () => {
               </label>
               <DatePicker
                 {...datePickerProps}
-                value={timeRange.startTime}
+                //@ts-ignore
+                value={new Date(timeRange.startTime)}
                 onChange={(value) => handleTimeChange(value, "startTime")}
                 placeholder="ساعت شروع را انتخاب کنید"
                 style={{ width: "100%" }}
+                disabled={editMode}
+                readOnly={editMode}
               />
             </div>
             <div className="flex items-center gap-4">
@@ -183,10 +267,13 @@ const AvailableTimes = () => {
               </label>
               <DatePicker
                 {...datePickerProps}
-                value={timeRange.endTime}
+                //@ts-ignore
+                value={new Date(timeRange.endTime)}
                 onChange={(value) => handleTimeChange(value, "endTime")}
                 placeholder="ساعت پایان را انتخاب کنید"
                 style={{ width: "100%" }}
+                disabled={editMode}
+                readOnly={editMode}
               />
             </div>
           </div>
@@ -201,18 +288,30 @@ const AvailableTimes = () => {
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-          <button
-            onClick={handleSubmit}
-            className="mt-4 w-full rounded-md bg-teal-600 py-2 text-white hover:bg-teal-700"
-          >
-            ثبت بازه جدید
-          </button>
+          <div className="flex gap-2 mt-4">
+            <button
+              onClick={handleSubmit}
+              className="flex-1 rounded-md bg-teal-600 py-2 text-white hover:bg-teal-700"
+            >
+              {editMode ? "ثبت تغییرات" : "ثبت بازه جدید"}
+            </button>
+            {editMode && (
+              <button
+                onClick={resetForm}
+                className="flex-1 rounded-md bg-gray-500 py-2 text-white hover:bg-gray-600"
+              >
+                انصراف
+              </button>
+            )}
+          </div>
         </CardContent>
       </Card>
 
       <AvailableTimesTable
         availableTimes={availableTimes}
         onDeleteClick={handleDeleteClick}
+        onEditClick={handleEdit}
+        onReservationToggle={handleReservationToggle}
       />
 
       <DeleteConfirmDialog

@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Trash } from "lucide-react";
+import { Trash, Pencil, CheckCircle, XCircle } from "lucide-react";
 import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
 
 export interface AvailableTime {
@@ -22,16 +22,22 @@ export interface AvailableTime {
   created_at: string;
   price: number;
   description: string;
+  reserved: 0 | 1;
+  reservation_id?: number;
 }
 
 interface AvailableTimesTableProps {
   availableTimes: AvailableTime[];
   onDeleteClick: (id: number) => void;
+  onEditClick: (time: AvailableTime) => void;
+  onReservationToggle: (time: AvailableTime) => void;
 }
 
 const AvailableTimesTable = ({
   availableTimes,
   onDeleteClick,
+  onEditClick,
+  onReservationToggle,
 }: AvailableTimesTableProps) => {
   return (
     <Card className="w-full rtl z-30 bg-white/90 col-span-2">
@@ -48,6 +54,7 @@ const AvailableTimesTable = ({
               <TableHead className="text-start p-4">ساعت پایان</TableHead>
               <TableHead className="text-start p-4">قیمت</TableHead>
               <TableHead className="text-start p-4">توضیحات</TableHead>
+              <TableHead className="text-start p-4">وضعیت</TableHead>
               <TableHead className="text-start p-4">عملیات</TableHead>
             </TableRow>
           </TableHeader>
@@ -69,13 +76,51 @@ const AvailableTimesTable = ({
                 <TableCell className="p-4 text-start">
                   {time.description}
                 </TableCell>
-                <TableCell className="p-4 text-start relative group">
-                  <button
-                    onClick={() => onDeleteClick(time.id)}
-                    className="invisible group-hover:visible text-red-600 hover:text-red-800"
+                <TableCell className="p-4 text-start">
+                  <span
+                    className={`inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${
+                      time.reserved
+                        ? "bg-red-100 text-red-800"
+                        : "bg-green-100 text-green-800"
+                    }`}
                   >
-                    <Trash />
-                  </button>
+                    {time.reserved ? "رزرو شده" : "خالی"}
+                  </span>
+                </TableCell>
+                <TableCell className="p-4 text-start relative group">
+                  <div className="invisible group-hover:visible flex gap-2">
+                    <button
+                      onClick={() => onEditClick(time)}
+                      className="text-blue-600 hover:text-blue-800"
+                      title="ویرایش"
+                    >
+                      <Pencil size={20} />
+                    </button>
+                    <button
+                      onClick={() => onDeleteClick(time.id)}
+                      className="text-red-600 hover:text-red-800"
+                      title="حذف"
+                    >
+                      <Trash size={20} />
+                    </button>
+                    <button
+                      onClick={() => onReservationToggle(time)}
+                      className={
+                        time.reserved
+                          ? "text-yellow-600 hover:text-yellow-800"
+                          : "text-green-600 hover:text-green-800"
+                      }
+                      title={
+                        time.reserved ? "لغو رزرو" : "رزرو بازه زمانی"
+                      }
+                    >
+                      {time.reserved ? (
+                        <XCircle size={20} />
+                      ) : (
+                        <CheckCircle size={20} />
+                      )}
+                    </button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
