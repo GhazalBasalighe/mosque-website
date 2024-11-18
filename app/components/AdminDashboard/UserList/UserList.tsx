@@ -17,13 +17,18 @@ import { UserResponse } from "../AdminDashboard";
 export function UserList({
   users,
   onDelete,
+  onUpdateRole,
 }: {
   users: UserResponse[];
   onDelete: (userId: number) => void;
+  onUpdateRole: (userId: number, newRole: string) => void;
 }) {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<number | null>(null);
+  const [editingRoleUserId, setEditingRoleUserId] = useState<
+    number | null
+  >(null);
 
   const handleDeleteConfirm = async () => {
     if (userToDelete !== null) {
@@ -50,10 +55,34 @@ export function UserList({
     setIsDialogOpen(false);
   };
 
+  const handleRoleChange = async (userId: number, newRole: string) => {
+    try {
+      await axiosInstance.patch(`/user/role/${userId}`, { role: newRole });
+      toast.success("نقش کاربر با موفقیت تغییر یافت");
+      onUpdateRole(userId, newRole);
+    } catch (error) {
+      console.error("Failed to update user role", error);
+      toast.error("تغییر نقش کاربر با خطا مواجه شد");
+    } finally {
+      setEditingRoleUserId(null);
+    }
+  };
+
+  const roles = [
+    { value: "Admin", label: "مدیر" },
+    { value: "User", label: "کاربر" },
+    // { value: "Blogger", label: "وبلاگ نویس" },
+  ];
+
   return (
     <>
+      {/* Description above the table */}
+      <p className="mb-4 text-right text-sm text-gray-700">
+        برای تغییر نقش کاربر، روی نقش دوبار کلیک کنید.
+      </p>
+
       <div className="max-h-96 overflow-y-auto">
-        <Table className="border-none rounded-2xl">
+        <Table className="border-none rounded-2xl w-full">
           <TableHeader className="bg-teal-100 rounded-t-lg hover:bg-teal-200">
             <TableRow>
               <TableHead className="text-start p-4">نام کاربری</TableHead>
@@ -88,7 +117,31 @@ export function UserList({
                   {convertToPersianDigits(user.phone_number)}
                 </TableCell>
                 <TableCell className="p-4 text-start">
-                  {user.role}
+                  {editingRoleUserId === user.id ? (
+                    <select
+                      value={user.role}
+                      onChange={(e) =>
+                        handleRoleChange(user.id, e.target.value)
+                      }
+                      onBlur={() => setEditingRoleUserId(null)}
+                      className="p-2 border rounded text-black"
+                    >
+                      {roles.map((role) => (
+                        <option key={role.value} value={role.value}>
+                          {role.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span
+                      onDoubleClick={() => setEditingRoleUserId(user.id)}
+                      className="cursor-pointer"
+                      title="دوبار کلیک برای تغییر نقش"
+                    >
+                      {roles.find((role) => role.value === user.role)
+                        ?.label || user.role}
+                    </span>
+                  )}
                 </TableCell>
                 <TableCell className="p-4 text-start">
                   {convertToPersianDigits(

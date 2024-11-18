@@ -28,10 +28,10 @@ export function TabsNavigation() {
         رزروها
       </TabsTrigger>
       <TabsTrigger
-        value="comments"
+        value="news"
         className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
       >
-        کامنت‌ها
+        اخبار
       </TabsTrigger>
     </TabsList>
   );
