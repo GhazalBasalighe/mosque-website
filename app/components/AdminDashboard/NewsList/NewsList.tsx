@@ -17,7 +17,7 @@ interface News {
   content?: string;
 }
 
-interface BlogResponse {
+export interface BlogResponse {
   total: number;
   page: number;
   data: News[];
