@@ -65,19 +65,19 @@ export default async function NewsDetailsPage({
           {/* Content with Image Wrapping */}
           <div className="relative">
             {thumbnail && (
-              <div className="float-right ml-6 mb-4 max-w-md">
+              <div className="float-right ml-6 mb-4 max-w-xs">
                 <Image
                   src={thumbnail}
                   alt={news.title}
-                  width={800}
-                  height={400}
+                  width={300}
+                  height={300}
                   className="rounded-lg shadow-lg object-cover"
                 />
               </div>
             )}
 
             {/* Content */}
-            <p className="text-lg leading-relaxed">{news.content}</p>
+            <p className="text-lg leading-loose">{news.content}</p>
           </div>
         </div>
       </section>
