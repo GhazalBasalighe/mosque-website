@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import axios from "axios";
 import NewsPageClient from "./NewsPageClient";
+import Header from "@/app/components/layout/Header/Header";
+import Footer from "@/app/components/layout/Footer/Footer";
 
 // Define News Type
 interface News {
@@ -53,11 +55,15 @@ export default async function NewsPage() {
   } = await fetchNewsData(1, 10);
 
   return (
-    <NewsPageClient
-      initialNews={initialNews}
-      total={total}
-      page={page}
-      perPage={perPage}
-    />
+    <>
+      <Header />
+      <NewsPageClient
+        initialNews={initialNews}
+        total={total}
+        page={page}
+        perPage={perPage}
+      />
+      <Footer />
+    </>
   );
 }

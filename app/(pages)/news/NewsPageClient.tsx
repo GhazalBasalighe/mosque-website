@@ -53,13 +53,21 @@ export default function NewsPageClient({
     try {
       const fetchedThumbnails: { [key: number]: string } = {};
       for (const item of newsList) {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_SERVICE_URL}/blog/thumbnail/${item.id}`,
-          {
-            responseType: "blob",
-          }
-        );
-        fetchedThumbnails[item.id] = URL.createObjectURL(response.data);
+        try {
+          const response = await axios.get(
+            `${process.env.NEXT_PUBLIC_SERVICE_URL}/blog/thumbnail/${item.id}`,
+            {
+              responseType: "blob",
+            }
+          );
+          fetchedThumbnails[item.id] = URL.createObjectURL(response.data);
+        } catch (error) {
+          console.warn(
+            `Failed to fetch thumbnail for ID ${item.id}:`,
+            error
+          );
+          // Skip this thumbnail and continue with the next
+        }
       }
       setThumbnails(fetchedThumbnails);
     } catch (error) {
@@ -93,12 +101,18 @@ export default function NewsPageClient({
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-5xl font-bold mb-12 text-gray-800 text-center">
-          اخبار
-          <div className="h-1 w-24 bg-teal-500 mx-auto mt-4 rounded-full" />
-        </h1>
+    <section className="py-12 bg-gray-200 text-gray-900 border-b-2 border-gray-300">
+      <div className="container mx-auto px-6 lg:px-12 text-right">
+        {/* Section Title */}
+        <div className="text-center mb-20 relative">
+          <h2 className="text-4xl font-bold mt-10">اخبار</h2>
+          <img
+            src="/images/frame.svg"
+            alt="Decorative Frame"
+            className="absolute left-1/2 transform -translate-x-1/2"
+            style={{ top: -40, width: "400px", height: "150px" }}
+          />
+        </div>
 
         {news.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow">
@@ -123,19 +137,20 @@ export default function NewsPageClient({
                   />
                 ) : (
                   <div className="w-full h-48 bg-gradient-to-r from-teal-500 to-blue-500 relative">
-                    <div className="absolute bottom-0 right-0 m-4">
+                    {/* COMMENTS ENABLED OR DISABLED */}
+                    {/* <div className="absolute bottom-0 right-0 m-4">
                       {item.comments_enabled ? (
                         <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
                           <CheckCircle size={16} className="mr-1" />
-                          فعال
+                          نظرات فعال
                         </div>
                       ) : (
                         <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
                           <XCircle size={16} className="mr-1" />
-                          غیرفعال
+                          نظرات غیر فعال
                         </div>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                 )}
 
@@ -150,16 +165,18 @@ export default function NewsPageClient({
 
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center">
-                      <User size={16} className="mr-2" />
+                      <User size={16} className="ml-2" />
                       <span>
                         {item.author_first_name} {item.author_last_name}
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <Clock size={16} className="mr-2" />
                       <span>
-                        {new Date(item.created_at).toLocaleDateString()}
+                        {new Date(item.created_at).toLocaleDateString(
+                          "fa-IR"
+                        )}
                       </span>
+                      <Clock size={16} className="mr-2" />
                     </div>
                   </div>
                 </div>
@@ -197,6 +214,6 @@ export default function NewsPageClient({
           </Dialog>
         )}
       </div>
-    </div>
+    </section>
   );
 }
