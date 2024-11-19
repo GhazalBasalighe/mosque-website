@@ -11,7 +11,7 @@ import { CheckCircle, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-interface BlogDetail {
+export interface BlogDetail {
   id: number;
   title: string;
   content: string;

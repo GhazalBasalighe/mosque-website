@@ -10,6 +10,7 @@ import { CheckCircle, XCircle, Clock, User } from "lucide-react";
 import NewsDetailedCard from "@/app/components/NewsDetailedCard/NewsDetailedCard";
 import CustomPagination from "@/app/components/Pagination/Pagination";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface NewsPageProps {
   initialNews: News[];
@@ -40,10 +41,7 @@ export default function NewsPageClient({
     {}
   );
   const [page, setPage] = useState<number>(initialPage);
-  const [selectedBlogId, setSelectedBlogId] = useState<number | null>(
-    null
-  );
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const router = useRouter();
 
   useEffect(() => {
     fetchAllThumbnails(initialNews);
@@ -89,15 +87,9 @@ export default function NewsPageClient({
       console.error("Error fetching news:", error);
     }
   };
-
   const handleRowClick = (blogId: number) => {
-    setSelectedBlogId(blogId);
-    setIsDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
-    setSelectedBlogId(null);
+    router.prefetch(`/news/${blogId}`); // Preload the page
+    router.push(`/news/${blogId}`); // Navigate
   };
 
   return (
@@ -105,12 +97,12 @@ export default function NewsPageClient({
       <div className="container mx-auto px-6 lg:px-12 text-right">
         {/* Section Title */}
         <div className="text-center mb-20 relative">
-          <h2 className="text-4xl font-bold mt-10">اخبار</h2>
+          <h2 className="text-4xl font-bold mt-10">اخبار و رویداد‌ها</h2>
           <img
             src="/images/frame.svg"
             alt="Decorative Frame"
             className="absolute left-1/2 transform -translate-x-1/2"
-            style={{ top: -40, width: "400px", height: "150px" }}
+            style={{ top: -45, width: "480px", height: "150px" }}
           />
         </div>
 
@@ -193,26 +185,6 @@ export default function NewsPageClient({
             onPageChange={handlePageChange}
           />
         </div>
-
-        {selectedBlogId && (
-          <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
-            <DialogContent className="max-w-3xl p-6 overflow-y-auto max-h-[80vh]">
-              <NewsDetailedCard
-                blogId={selectedBlogId}
-                isOpen={isDialogOpen}
-                onClose={handleDialogClose}
-              />
-              <DialogFooter className="flex justify-end mt-4">
-                <Button
-                  onClick={handleDialogClose}
-                  className="bg-red-500 text-white hover:bg-red-600"
-                >
-                  بستن
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        )}
       </div>
     </section>
   );
