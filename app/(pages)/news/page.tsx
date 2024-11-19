@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import axios from "axios";
-import NewsPageClient from "./NewsPageClient";
 import Header from "@/app/components/layout/Header/Header";
 import Footer from "@/app/components/layout/Footer/Footer";
+import NewsPageClient from "./NewsPageClient";
 
 // Define News Type
 interface News {
