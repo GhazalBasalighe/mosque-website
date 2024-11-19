@@ -26,12 +26,17 @@ export default async function NewsDetailsPage({
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_SERVICE_URL}/blog/thumbnail/${id}`,
-        { responseType: "blob" }
+        { responseType: "arraybuffer" }
       );
-      return URL.createObjectURL(response.data);
+
+      // Convert to base64
+      const base64 = Buffer.from(response.data, "binary").toString(
+        "base64"
+      );
+      return `data:image/jpeg;base64,${base64}`;
     } catch (error) {
       console.warn(`Failed to fetch thumbnail for ID ${id}:`, error);
-      return null; // Return null if thumbnail fetch fails
+      return null;
     }
   };
 
@@ -57,21 +62,23 @@ export default async function NewsDetailsPage({
             </span>
           </div>
 
-          {/* Thumbnail */}
-          {thumbnail && (
-            <div className="mb-6">
-              <Image
-                src={thumbnail}
-                alt={news.title}
-                width={800}
-                height={400}
-                className="w-full h-auto rounded-lg shadow-lg object-cover"
-              />
-            </div>
-          )}
+          {/* Content with Image Wrapping */}
+          <div className="relative">
+            {thumbnail && (
+              <div className="float-right ml-6 mb-4 max-w-md">
+                <Image
+                  src={thumbnail}
+                  alt={news.title}
+                  width={800}
+                  height={400}
+                  className="rounded-lg shadow-lg object-cover"
+                />
+              </div>
+            )}
 
-          {/* Content */}
-          <p className="text-lg leading-relaxed">{news.content}</p>
+            {/* Content */}
+            <p className="text-lg leading-relaxed">{news.content}</p>
+          </div>
         </div>
       </section>
       <Footer />
