@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 export interface BlogDetail {
   id: number;
   title: string;
-  content: string;
+  content: string; // HTML content
   comments_enabled: number;
   created_at: string;
   updated_at: string;
@@ -88,7 +88,13 @@ const NewsDetailedCard = ({
             </div>
           )}
           <div className="flex flex-col gap-4">
-            <p className="text-right text-base">{blogDetail.content}</p>
+            {/* Render HTML content safely */}
+            <div
+              className="text-right text-base"
+              dangerouslySetInnerHTML={{
+                __html: blogDetail.content || "بدون محتوا",
+              }}
+            ></div>
             <p className="text-right text-sm text-gray-600">
               نویسنده: {blogDetail.author_first_name}{" "}
               {blogDetail.author_last_name}

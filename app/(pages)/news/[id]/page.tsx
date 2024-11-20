@@ -76,8 +76,13 @@ export default async function NewsDetailsPage({
               </div>
             )}
 
-            {/* Content */}
-            <p className="text-lg leading-loose">{news.content}</p>
+            {/* Render content as HTML */}
+            <div
+              className="text-lg leading-loose"
+              dangerouslySetInnerHTML={{
+                __html: news.content || "بدون محتوا",
+              }}
+            ></div>
           </div>
         </div>
       </section>

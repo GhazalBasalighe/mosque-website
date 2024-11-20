@@ -14,7 +14,7 @@ import NewsDetailedCard from "../../NewsDetailedCard/NewsDetailedCard";
 interface News {
   id: number;
   title: string;
-  content?: string;
+  content?: string; // HTML content
 }
 
 export interface BlogResponse {
@@ -91,9 +91,15 @@ const NewsList = () => {
                     {item.title}
                   </TableCell>
                   <TableCell className="p-4 text-start">
-                    {item.content
-                      ? `${item.content.substring(0, 50)}...`
-                      : "-"}
+                    {item.content ? (
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: item.content.substring(0, 50) + "...",
+                        }}
+                      ></div>
+                    ) : (
+                      "-"
+                    )}
                   </TableCell>
                 </TableRow>
               ))

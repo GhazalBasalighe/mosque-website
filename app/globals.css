@@ -53,3 +53,21 @@
 {
   width: 100%;
 }
+
+[role="switch"]
+{
+  direction: ltr;
+}
+
+.ql-toolbar
+{
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+
+}
+
+.ql-container
+{
+  border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}

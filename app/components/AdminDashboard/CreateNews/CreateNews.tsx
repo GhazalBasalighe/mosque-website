@@ -1,4 +1,5 @@
 import { useState } from "react";
+import dynamic from "next/dynamic"; // Required for SSR
 import { axiosInstance } from "@/app/api/api";
 import {
   Card,
@@ -8,14 +9,50 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch"; // ShadCN switch component
 import toast from "react-hot-toast";
+
+// Dynamically import ReactQuill to avoid SSR issues
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+
+// ReactQuill styles
+import "react-quill/dist/quill.snow.css";
+
+const modules = {
+  toolbar: [
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ align: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ direction: "rtl" }],
+    ["link"],
+    ["clean"],
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
+};
+
+const formats = [
+  "header",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "align",
+  "blockquote",
+  "list",
+  "bullet",
+  "direction",
+  "link",
+];
 
 const CreateNewsCard = () => {
   const [title, setTitle] = useState<string>("");
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState<string>(""); // HTML content from ReactQuill
   const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [commentsEnabled, setCommentsEnabled] = useState<boolean>(false); // State for comments toggle
 
   const handleSubmit = async () => {
     try {
@@ -26,11 +63,17 @@ const CreateNewsCard = () => {
         formData.append("title", title);
       }
       if (content) {
-        formData.append("content", content);
+        formData.append("content", content); // HTML content
       }
       if (thumbnail) {
         formData.append("thumbnail", thumbnail);
       }
+
+      // Adding comments_enabled to the body
+      formData.append(
+        "comments_enabled",
+        commentsEnabled === true ? "1" : "0"
+      );
 
       // Sending post request to /blog endpoint
       await axiosInstance.post("/blog", formData, {
@@ -46,6 +89,7 @@ const CreateNewsCard = () => {
       setTitle("");
       setContent("");
       setThumbnail(null);
+      setCommentsEnabled(false); // Reset switch to default
     } catch (error) {
       console.error("Error creating news:", error);
       toast.error("خطا در ایجاد خبر");
@@ -76,11 +120,13 @@ const CreateNewsCard = () => {
             <label className="text-right text-sm font-medium mb-2">
               محتوا
             </label>
-            <Textarea
+            <ReactQuill
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={setContent}
               placeholder="محتوای خبر را وارد کنید"
-              className="text-right"
+              modules={modules}
+              formats={formats}
+              className="text-right rtl h-32 mb-16 rounded-md"
             />
           </div>
           <div className="flex flex-col">
@@ -96,6 +142,16 @@ const CreateNewsCard = () => {
               }}
               accept="image/*"
               className="text-right"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <label className="text-right text-sm font-medium">
+              فعال‌سازی نظرات
+            </label>
+            <Switch
+              checked={commentsEnabled}
+              onCheckedChange={(checked) => setCommentsEnabled(checked)}
+              className=" bg-gray-300 data-[state=checked]:bg-teal-600"
             />
           </div>
         </div>

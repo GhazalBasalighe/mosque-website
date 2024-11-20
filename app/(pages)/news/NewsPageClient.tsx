@@ -1,15 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, XCircle, Clock, User } from "lucide-react";
-import NewsDetailedCard from "@/app/components/NewsDetailedCard/NewsDetailedCard";
+import { useState, useEffect } from "react";
 import CustomPagination from "@/app/components/Pagination/Pagination";
 import axios from "axios";
+import { CheckCircle, Clock, User, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface NewsPageProps {
@@ -64,7 +57,6 @@ export default function NewsPageClient({
             `Failed to fetch thumbnail for ID ${item.id}:`,
             error
           );
-          // Skip this thumbnail and continue with the next
         }
       }
       setThumbnails(fetchedThumbnails);
@@ -87,15 +79,15 @@ export default function NewsPageClient({
       console.error("Error fetching news:", error);
     }
   };
+
   const handleRowClick = (blogId: number) => {
-    router.prefetch(`/news/${blogId}`); // Preload the page
-    router.push(`/news/${blogId}`); // Navigate
+    router.prefetch(`/news/${blogId}`);
+    router.push(`/news/${blogId}`);
   };
 
   return (
     <section className="py-12 bg-gray-200 text-gray-900 border-b-2 border-gray-300">
       <div className="container mx-auto px-6 lg:px-12 text-right">
-        {/* Section Title */}
         <div className="text-center mb-20 relative">
           <h2 className="text-4xl font-bold mt-10">اخبار و رویداد‌ها</h2>
           <img
@@ -120,7 +112,6 @@ export default function NewsPageClient({
                 }`}
                 onClick={() => handleRowClick(item.id)}
               >
-                {/* Thumbnail or Placeholder */}
                 {thumbnails[item.id] ? (
                   <img
                     src={thumbnails[item.id]}
@@ -129,8 +120,7 @@ export default function NewsPageClient({
                   />
                 ) : (
                   <div className="w-full h-48 bg-gradient-to-r from-teal-500 to-blue-500 relative">
-                    {/* COMMENTS ENABLED OR DISABLED */}
-                    {/* <div className="absolute bottom-0 right-0 m-4">
+                    <div className="absolute bottom-0 right-0 m-4">
                       {item.comments_enabled ? (
                         <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
                           <CheckCircle size={16} className="mr-1" />
@@ -142,7 +132,7 @@ export default function NewsPageClient({
                           نظرات غیر فعال
                         </div>
                       )}
-                    </div> */}
+                    </div>
                   </div>
                 )}
 
@@ -151,9 +141,13 @@ export default function NewsPageClient({
                     {item.title}
                   </h2>
 
-                  <p className="text-gray-600 mb-4 line-clamp-3">
-                    {item.content ? item.content : "بدون محتوا"}
-                  </p>
+                  {/* Render content from Quill Editor */}
+                  <div
+                    className="text-gray-600 mb-4 line-clamp-3"
+                    dangerouslySetInnerHTML={{
+                      __html: item.content || "بدون محتوا",
+                    }}
+                  ></div>
 
                   <div className="flex items-center justify-between text-sm text-gray-500">
                     <div className="flex items-center">
