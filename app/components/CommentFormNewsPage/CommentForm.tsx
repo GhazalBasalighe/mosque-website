@@ -1,153 +1,319 @@
 "use client";
-import React, { useState } from "react";
-import axios from "axios";
+import { axiosInstance } from "@/app/api/api";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+
+interface Comment {
+  id: number;
+  body: string;
+  name: string;
+  email: string;
+  created_at: string;
+  parentId: number | null;
+  replies?: Comment[];
+}
 
 interface CommentFormProps {
   commentableId: number;
-  commentableType: "blog" | "journal";
-  parentId?: number;
-  onCommentSubmit?: () => void;
+  commentableType: string;
 }
 
 const CommentForm: React.FC<CommentFormProps> = ({
   commentableId,
   commentableType,
-  parentId = 0,
-  onCommentSubmit,
 }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [body, setBody] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState({
+    name: "",
+    email: "",
+    body: "",
+  });
+  const [replyTo, setReplyTo] = useState<number | null>(null); // Tracks which comment is being replied to
 
-  const validateForm = () => {
-    if (!name.trim()) {
-      toast.error("نام را وارد کنید");
-      return false;
-    }
-    if (!email.trim()) {
-      toast.error("ایمیل را وارد کنید");
-      return false;
-    }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      toast.error("ایمیل معتبر نیست");
-      return false;
-    }
-    if (!body.trim()) {
-      toast.error("متن نظر را وارد کنید");
-      return false;
-    }
-    return true;
+  // Fetch existing comments
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/comment/${commentableType}/${commentableId}`
+        );
+        const commentsData = response.data.comments;
+
+        // Nest replies under their parent comments
+        const nestedComments = commentsData.filter(
+          (comment: Comment) => !comment.parentId
+        );
+        nestedComments.forEach((comment: Comment) => {
+          comment.replies = commentsData.filter(
+            (reply: Comment) => reply.parentId === comment.id
+          );
+        });
+
+        setComments(nestedComments);
+      } catch (err: any) {
+        if (err.response?.status !== 404) {
+          toast.error("خطایی در بارگزاری نظرات پیش آمد");
+        } else console.error(err);
+      }
+    };
+
+    fetchComments();
+  }, [commentableId, commentableType]);
+
+  // Handle input changes
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setNewComment((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
+  // Submit new comment or reply
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-
     try {
-      const commentData = {
-        body,
-        name,
-        email,
-        commentableType,
-        commentableId,
-      };
-
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVICE_URL}/comment`,
-        commentData
-      );
-
-      toast.success("نظر شما با موفقیت ارسال شد");
+      const response = await axiosInstance.post(`/comment`, {
+        ...newComment,
+        commentable_type: commentableType,
+        commentable_id: commentableId,
+        parentId: replyTo || null,
+      });
 
       // Reset form
-      setName("");
-      setEmail("");
-      setBody("");
+      setNewComment({
+        name: "",
+        email: "",
+        body: "",
+      });
 
-      // Optional callback for parent component
-      if (onCommentSubmit) {
-        onCommentSubmit();
+      if (replyTo) {
+        // Add the reply under the parent comment
+        setComments((prev) =>
+          prev.map((comment) =>
+            comment.id === replyTo
+              ? {
+                  ...comment,
+                  replies: [response.data, ...(comment.replies || [])],
+                }
+              : comment
+          )
+        );
+        setReplyTo(null);
+      } else {
+        // Add the new comment to the list
+        setComments((prev) => [response.data, ...prev]);
       }
-    } catch (error) {
-      console.error("Error submitting comment:", error);
-      toast.error("مشکلی در ارسال نظر رخ داده است");
-    } finally {
-      setIsSubmitting(false);
+
+      toast.success("نظر شما با موفقیت ارسال شد");
+    } catch (err) {
+      toast.error("خطایی در ارسال نظر پیش آمده");
+      console.error(err);
     }
   };
 
   return (
-    <div className="px-12 w-3/4">
-      <h3 className="text-2xl font-bold mb-4">ثبت نظر جدید</h3>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            نام
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            placeholder="نام خود را وارد کنید"
-          />
+    <div className="container mx-auto px-6 lg:px-12 mt-8">
+      {/* Comments List */}
+      {comments.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-2xl font-bold mb-4">نظرات</h2>
+          {comments.map((comment) => (
+            <div
+              key={comment.id}
+              className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+            >
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-lg font-semibold">{comment.name}</h3>
+                <span className="text-sm text-gray-500">
+                  {new Date(comment.created_at).toLocaleDateString(
+                    "fa-IR"
+                  )}
+                </span>
+              </div>
+              <p className="text-gray-700 mb-4">{comment.body}</p>
+              <button
+                onClick={() => setReplyTo(comment.id)}
+                className="text-teal-600 hover:text-teal-800 text-sm"
+              >
+                پاسخ
+              </button>
+              {/* Replies */}
+              {comment.replies && comment.replies.length > 0 && (
+                <div className="mt-4 ml-6 border-l-2 pl-4">
+                  {comment.replies.map((reply) => (
+                    <div
+                      key={reply.id}
+                      className="bg-gray-50 rounded px-4 py-3 mb-2 shadow-sm"
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <h4 className="text-sm font-medium">
+                          {reply.name}
+                        </h4>
+                        <span className="text-xs text-gray-500">
+                          {new Date(reply.created_at).toLocaleDateString(
+                            "fa-IR"
+                          )}
+                        </span>
+                      </div>
+                      <p className="text-gray-600">{reply.body}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {/* Reply Form (Displayed Below Comment Being Replied To) */}
+              {replyTo === comment.id && (
+                <form
+                  onSubmit={handleSubmit}
+                  className="mt-4 bg-gray-50 shadow-sm rounded px-6 pt-4 pb-6 border"
+                >
+                  <h4 className="text-md font-bold mb-4">
+                    پاسخ به {comment.name}
+                  </h4>
+                  <div className="mb-4">
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="name"
+                    >
+                      نام
+                    </label>
+                    <input
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="name"
+                      type="text"
+                      name="name"
+                      value={newComment.name}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="email"
+                    >
+                      ایمیل
+                    </label>
+                    <input
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="email"
+                      type="email"
+                      name="email"
+                      value={newComment.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                  <div className="mb-6">
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="body"
+                    >
+                      متن نظر
+                    </label>
+                    <textarea
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      id="body"
+                      name="body"
+                      value={newComment.body}
+                      onChange={handleInputChange}
+                      required
+                      rows={3}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <button
+                      className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      type="submit"
+                    >
+                      ارسال پاسخ
+                    </button>
+                    <button
+                      className="text-gray-600 hover:text-gray-800"
+                      type="button"
+                      onClick={() => setReplyTo(null)}
+                    >
+                      انصراف
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          ))}
         </div>
+      )}
 
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            ایمیل
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            placeholder="ایمیل خود را وارد کنید"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="body"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            متن نظر
-          </label>
-          <textarea
-            id="body"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
-            placeholder="نظر خود را بنویسید"
-          ></textarea>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`px-6 py-3 rounded-md text-white font-bold transition-colors ${
-            isSubmitting
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-teal-600 hover:bg-teal-700"
-          }`}
+      {/* Main Comment Form */}
+      {!replyTo && (
+        <form
+          onSubmit={handleSubmit}
+          className="bg-gray-50 shadow-md rounded px-8 pt-6 pb-8 mb-8 border"
         >
-          {isSubmitting ? "در حال ارسال..." : "ارسال نظر"}
-        </button>
-      </form>
+          <h2 className="text-2xl font-bold mb-6">ارسال نظر جدید</h2>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="name"
+            >
+              نام
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="name"
+              type="text"
+              name="name"
+              value={newComment.name}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="email"
+            >
+              ایمیل
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="email"
+              type="email"
+              name="email"
+              value={newComment.email}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <label
+              className="block text-gray-700 text-sm font-bold mb-2"
+              htmlFor="body"
+            >
+              متن نظر
+            </label>
+            <textarea
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="body"
+              name="body"
+              value={newComment.body}
+              onChange={handleInputChange}
+              required
+              rows={4}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <button
+              className="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              ارسال نظر
+            </button>
+          </div>
+        </form>
+      )}
     </div>
   );
 };
