@@ -114,45 +114,22 @@ const CommentForm: React.FC<CommentFormProps> = ({
         parentId: replyTo || null,
       });
 
-      const newCommentData = response.data;
-
       setNewComment({
         name: "",
         email: "",
         body: "",
       });
 
-      // Update comments state using the same tree building logic
-      setComments((prevComments) => {
-        let updatedComments = [...prevComments];
-
-        if (replyTo) {
-          // For replies, find the parent comment and add the reply
-          updatedComments = updatedComments.map((comment) => {
-            if (comment.id === replyTo) {
-              return {
-                ...comment,
-                replies: [newCommentData, ...(comment.replies || [])],
-              };
-            }
-            return comment;
-          });
-        } else {
-          // For new root comments, add to the top level
-          updatedComments = [newCommentData, ...updatedComments];
-        }
-
-        // Rebuild the entire tree to ensure consistency
-        return buildCommentTree(
-          updatedComments.flatMap((comment) => [
-            comment,
-            ...(comment.replies || []),
-          ])
-        );
-      });
-
       setReplyTo(null);
-      toast.success("نظر شما با موفقیت ارسال شد");
+      toast.success(
+        "نظر شما با موفقیت ارسال شد و پس از تایید مدیریت نمایش داده خواهد شد",
+        {
+          duration: 6000,
+          style: {
+            textAlign: "center",
+          },
+        }
+      );
     } catch (err) {
       toast.error("خطایی در ارسال نظر پیش آمده");
       console.error(err);
