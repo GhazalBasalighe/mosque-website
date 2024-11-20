@@ -86,8 +86,14 @@ export default async function NewsDetailsPage({
             ></div>
           </div>
         </div>
-        {news.comments_enabled && (
+        {news.comments_enabled === 1 ? (
           <CommentForm commentableId={Number(id)} commentableType="blog" />
+        ) : (
+          <div className="mt-12 text-center py-6 px-4 rounded-lg ">
+            <p className="text-red-600 text-lg">
+              نظرات برای این خبر بسته شده است.
+            </p>
+          </div>
         )}
       </section>
       <Footer />
