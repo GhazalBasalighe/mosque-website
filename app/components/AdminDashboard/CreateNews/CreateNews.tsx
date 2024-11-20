@@ -99,7 +99,7 @@ const CreateNewsCard = () => {
   return (
     <Card className="w-full rtl mb-8 bg-white/90 relative z-10">
       <CardHeader>
-        <CardTitle className="text-right font-bold text-xl">
+        <CardTitle className="text-right font-bold text-2xl">
           ایجاد خبر جدید
         </CardTitle>
       </CardHeader>

@@ -17,6 +17,7 @@ import { UserList } from "./UserList/UserList";
 import Reservations from "./Reservations/Reservations";
 import NewsList from "./NewsList/NewsList";
 import CreateNewsCard from "./CreateNews/CreateNews";
+import Link from "next/link";
 
 type AccountFormValues = {
   firstName: string;
@@ -202,6 +203,17 @@ function AdminDashboard() {
   return (
     <Tabs defaultValue="account" className="w-full" dir="rtl">
       <div className="flex items-center justify-between p-4 bg-teal-800 h-20 rounded-none">
+        <Link
+          className="flex items-center justify-center self-start gap-4 ml-6"
+          href="/"
+        >
+          <img
+            src="/images/logo.png"
+            alt="profile"
+            className="rounded-full w-10 h-10"
+          />
+          <div className="text-2xl font-bold text-white">نام مسجد </div>
+        </Link>
         <TabsNavigation />
         <UserAvatar profilePhoto={profilePhoto} username={username} />
       </div>
