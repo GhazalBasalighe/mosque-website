@@ -9,7 +9,7 @@ interface Comment {
   name: string;
   email: string;
   created_at: string;
-  parentId: number | null;
+  parent_id: number | null;
   replies?: Comment[];
 }
 
@@ -28,7 +28,48 @@ const CommentForm: React.FC<CommentFormProps> = ({
     email: "",
     body: "",
   });
-  const [replyTo, setReplyTo] = useState<number | null>(null); // Tracks which comment is being replied to
+  const [replyTo, setReplyTo] = useState<number | null>(null);
+
+  // Helper function to build nested comment structure
+  const buildCommentTree = (commentsData: Comment[]): Comment[] => {
+    const commentMap = new Map<number, Comment>();
+    const rootComments: Comment[] = [];
+
+    // First pass: create map of all comments
+    commentsData.forEach((comment) => {
+      commentMap.set(comment.id, { ...comment, replies: [] });
+    });
+
+    // Second pass: build tree structure
+    commentMap.forEach((comment) => {
+      if (comment.parent_id && commentMap.has(comment.parent_id)) {
+        // Add as reply to parent
+        const parent = commentMap.get(comment.parent_id);
+        if (parent && parent.replies) {
+          parent.replies.push(comment);
+        }
+      } else if (!comment.parent_id) {
+        // Add to root level comments
+        rootComments.push(comment);
+      }
+    });
+
+    // Sort comments and replies by created_at (newest first)
+    rootComments.forEach((comment) => {
+      if (comment.replies) {
+        comment.replies.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime()
+        );
+      }
+    });
+
+    return rootComments.sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
+  };
 
   // Fetch existing comments
   useEffect(() => {
@@ -38,17 +79,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
           `/comment/${commentableType}/${commentableId}`
         );
         const commentsData = response.data.comments;
-
-        // Nest replies under their parent comments
-        const nestedComments = commentsData.filter(
-          (comment: Comment) => !comment.parentId
-        );
-        nestedComments.forEach((comment: Comment) => {
-          comment.replies = commentsData.filter(
-            (reply: Comment) => reply.parentId === comment.id
-          );
-        });
-
+        const nestedComments = buildCommentTree(commentsData);
         setComments(nestedComments);
       } catch (err: any) {
         if (err.response?.status !== 404) {
@@ -78,36 +109,49 @@ const CommentForm: React.FC<CommentFormProps> = ({
     try {
       const response = await axiosInstance.post(`/comment`, {
         ...newComment,
-        commentable_type: commentableType,
-        commentable_id: commentableId,
+        commentableType,
+        commentableId,
         parentId: replyTo || null,
       });
 
-      // Reset form
+      const newCommentData = response.data;
+
       setNewComment({
         name: "",
         email: "",
         body: "",
       });
 
-      if (replyTo) {
-        // Add the reply under the parent comment
-        setComments((prev) =>
-          prev.map((comment) =>
-            comment.id === replyTo
-              ? {
-                  ...comment,
-                  replies: [response.data, ...(comment.replies || [])],
-                }
-              : comment
-          )
-        );
-        setReplyTo(null);
-      } else {
-        // Add the new comment to the list
-        setComments((prev) => [response.data, ...prev]);
-      }
+      // Update comments state using the same tree building logic
+      setComments((prevComments) => {
+        let updatedComments = [...prevComments];
 
+        if (replyTo) {
+          // For replies, find the parent comment and add the reply
+          updatedComments = updatedComments.map((comment) => {
+            if (comment.id === replyTo) {
+              return {
+                ...comment,
+                replies: [newCommentData, ...(comment.replies || [])],
+              };
+            }
+            return comment;
+          });
+        } else {
+          // For new root comments, add to the top level
+          updatedComments = [newCommentData, ...updatedComments];
+        }
+
+        // Rebuild the entire tree to ensure consistency
+        return buildCommentTree(
+          updatedComments.flatMap((comment) => [
+            comment,
+            ...(comment.replies || []),
+          ])
+        );
+      });
+
+      setReplyTo(null);
       toast.success("نظر شما با موفقیت ارسال شد");
     } catch (err) {
       toast.error("خطایی در ارسال نظر پیش آمده");
@@ -141,9 +185,10 @@ const CommentForm: React.FC<CommentFormProps> = ({
               >
                 پاسخ
               </button>
+
               {/* Replies */}
               {comment.replies && comment.replies.length > 0 && (
-                <div className="mt-4 ml-6 border-l-2 pl-4">
+                <div className="mt-4 mr-6 border-r-2 pr-4">
                   {comment.replies.map((reply) => (
                     <div
                       key={reply.id}
@@ -164,7 +209,8 @@ const CommentForm: React.FC<CommentFormProps> = ({
                   ))}
                 </div>
               )}
-              {/* Reply Form (Displayed Below Comment Being Replied To) */}
+
+              {/* Reply Form */}
               {replyTo === comment.id && (
                 <form
                   onSubmit={handleSubmit}
