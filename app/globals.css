@@ -5,13 +5,16 @@
 @import "~slick-carousel/slick/slick.css";
 @import "~slick-carousel/slick/slick-theme.css";
 
-@layer base {
-  :root {
+@layer base
+{
+  :root
+  {
     --radius: 0.5rem;
   }
 }
 
-.animated-heading {
+.animated-heading
+{
   position: relative;
   padding-bottom: 0.5rem;
   transition: color 0.2s ease-in-out;
@@ -20,7 +23,8 @@
   color: mintcream;
 }
 
-.animated-heading::after {
+.animated-heading::after
+{
   content: "";
   position: absolute;
   left: 0;
@@ -34,15 +38,18 @@
   transform-origin: left;
 }
 
-.animated-heading:hover {
+.animated-heading:hover
+{
   color: #14b8a6;
   /* Tailwind teal-200 color */
 }
 
-.animated-heading:hover::after {
+.animated-heading:hover::after
+{
   transform: scaleX(1);
 }
 
-.rmdp-container {
+.rmdp-container
+{
   width: 100%;
 }

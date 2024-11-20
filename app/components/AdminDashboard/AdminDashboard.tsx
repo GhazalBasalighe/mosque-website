@@ -326,7 +326,7 @@ function AdminDashboard() {
         </Card>
       </TabsContent>
       <TabsContent
-        value="reservationManagement"
+        value="users"
         className="p-6 bg-teal-100 mt-0 relative h-[81vh]"
       >
         <Image
@@ -343,7 +343,18 @@ function AdminDashboard() {
           width={100}
           height={100}
         />
-        <Reservations />
+        <Card className="w-full ml-auto p-6 bg-white/80 z-10 shadow-xl rounded-lg">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            لیست کاربران
+          </h2>
+          <div className="overflow-x-auto">
+            <UserList
+              users={users}
+              onDelete={removeUserFromList}
+              onUpdateRole={fetchUsers}
+            />
+          </div>
+        </Card>
       </TabsContent>
       <TabsContent
         value="availableTimes"
@@ -366,7 +377,7 @@ function AdminDashboard() {
         <AvailableTimes />
       </TabsContent>
       <TabsContent
-        value="users"
+        value="reservationManagement"
         className="p-6 bg-teal-100 mt-0 relative h-[81vh]"
       >
         <Image
@@ -383,22 +394,11 @@ function AdminDashboard() {
           width={100}
           height={100}
         />
-        <Card className="w-full ml-auto p-6 bg-white/80 relative z-10 shadow-xl rounded-lg">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            لیست کاربران
-          </h2>
-          <div className="overflow-x-auto">
-            <UserList
-              users={users}
-              onDelete={removeUserFromList}
-              onUpdateRole={fetchUsers}
-            />
-          </div>
-        </Card>
+        <Reservations />
       </TabsContent>
       <TabsContent
         value="news"
-        className="p-6 bg-teal-100 mt-0 relative h-[81vh] grid grid-cols-3 gap-4"
+        className="p-6 bg-teal-100 mt-0 relative h-[81vh]"
       >
         <Image
           src="/images/mandala.svg"
@@ -414,12 +414,14 @@ function AdminDashboard() {
           width={100}
           height={100}
         />
-        <Card className="w-full ml-auto p-6 bg-white/80 relative z-10 shadow-xl rounded-lg">
-          <CreateNewsCard />
-        </Card>
-        <Card className="w-full ml-auto p-6 bg-white/80 relative z-10 shadow-xl rounded-lg col-span-2">
-          <NewsList />
-        </Card>
+        <div className=" grid grid-cols-3 gap-4">
+          <Card className="w-full ml-auto p-6 bg-white/80 relative z-10 shadow-xl rounded-lg">
+            <CreateNewsCard />
+          </Card>
+          <Card className="w-full ml-auto p-6 bg-white/80 relative z-10 shadow-xl rounded-lg col-span-2">
+            <NewsList />
+          </Card>
+        </div>
       </TabsContent>
     </Tabs>
   );
