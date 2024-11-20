@@ -22,14 +22,6 @@ export default function ReservationSection() {
             رزرو فضای مراسم
           </h3>
 
-          {/* Cost Information */}
-          <div className="text-center mb-6 text-gray-600">
-            <p>
-              هزینه رزرو:{" "}
-              <span className="font-semibold">۵۰۰,۰۰۰ ریال</span>
-            </p>
-          </div>
-
           {/* Login Prompt */}
           <p className="text-sm text-gray-600 text-center mb-8">
             برای رزرو مسجد ابتدا باید وارد حساب کاربری خود شوید
