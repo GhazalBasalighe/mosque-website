@@ -13,7 +13,7 @@ export function TabsNavigation() {
         value="users"
         className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
       >
-        مدیریت کاربران
+        کاربران
       </TabsTrigger>
       <TabsTrigger
         value="availableTimes"
@@ -32,6 +32,12 @@ export function TabsNavigation() {
         className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
       >
         اخبار
+      </TabsTrigger>
+      <TabsTrigger
+        value="comments"
+        className="px-4 py-2 rounded-md data-[state=active]:bg-teal-500 data-[state=active]:text-white text-gray-200"
+      >
+        نظرات کاربران
       </TabsTrigger>
     </TabsList>
   );

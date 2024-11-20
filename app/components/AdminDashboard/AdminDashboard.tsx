@@ -18,6 +18,7 @@ import Reservations from "./Reservations/Reservations";
 import NewsList from "./NewsList/NewsList";
 import CreateNewsCard from "./CreateNews/CreateNews";
 import Link from "next/link";
+import { CommentList } from "./CommentsList/CommentsList";
 
 type AccountFormValues = {
   firstName: string;
@@ -432,6 +433,33 @@ function AdminDashboard() {
             <NewsList />
           </Card>
         </div>
+      </TabsContent>
+      <TabsContent
+        value="comments"
+        className="p-6 bg-teal-100 mt-0 relative h-[81vh]"
+      >
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute bottom-[2%] left-[2%] opacity-70"
+          width={200}
+          height={200}
+        />
+        <Image
+          src="/images/mandala.svg"
+          alt="Mandala Decoration"
+          className="absolute bottom-[20%] left-[13%] opacity-60"
+          width={100}
+          height={100}
+        />
+        <Card className="w-full ml-auto p-6 bg-white/80 z-10 shadow-xl rounded-lg">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            لیست نظرات کاربران
+          </h2>
+          <div className="overflow-x-auto">
+            <CommentList />
+          </div>
+        </Card>
       </TabsContent>
     </Tabs>
   );
