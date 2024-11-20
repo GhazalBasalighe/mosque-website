@@ -1,3 +1,4 @@
+import CommentForm from "@/app/components/CommentFormNewsPage/CommentForm";
 import Footer from "@/app/components/layout/Footer/Footer";
 import Header from "@/app/components/layout/Header/Header";
 import { BlogDetail } from "@/app/components/NewsDetailedCard/NewsDetailedCard";
@@ -85,6 +86,9 @@ export default async function NewsDetailsPage({
             ></div>
           </div>
         </div>
+        {news.comments_enabled && (
+          <CommentForm commentableId={Number(id)} commentableType="blog" />
+        )}
       </section>
       <Footer />
     </>
