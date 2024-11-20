@@ -398,7 +398,7 @@ function AdminDashboard() {
       </TabsContent>
       <TabsContent
         value="news"
-        className="p-6 bg-teal-100 mt-0 relative h-[100vh]"
+        className="p-6 bg-teal-100 mt-0 relative overflow-y-auto h-full"
       >
         <Image
           src="/images/mandala.svg"
@@ -414,11 +414,9 @@ function AdminDashboard() {
           width={100}
           height={100}
         />
-        <div className=" grid grid-cols-3 gap-4 h-[80%]">
+        <div className=" grid grid-cols-1 gap-4 ">
+          <CreateNewsCard />
           <Card className="w-full ml-auto p-6 bg-white/80 relative z-10 shadow-xl rounded-lg">
-            <CreateNewsCard />
-          </Card>
-          <Card className="w-full ml-auto p-6 bg-white/80 relative z-10 shadow-xl rounded-lg col-span-2">
             <NewsList />
           </Card>
         </div>

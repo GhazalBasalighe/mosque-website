@@ -97,7 +97,7 @@ const CreateNewsCard = () => {
   };
 
   return (
-    <Card className="w-full rtl mb-8 bg-white/90">
+    <Card className="w-full rtl mb-8 bg-white/90 relative z-10">
       <CardHeader>
         <CardTitle className="text-right font-bold text-xl">
           ایجاد خبر جدید
@@ -126,7 +126,7 @@ const CreateNewsCard = () => {
               placeholder="محتوای خبر را وارد کنید"
               modules={modules}
               formats={formats}
-              className="text-right rtl h-32 mb-16 rounded-md"
+              className="text-right rtl h-40 mb-16 rounded-md"
             />
           </div>
           <div className="flex flex-col">
