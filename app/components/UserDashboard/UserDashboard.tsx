@@ -11,11 +11,10 @@ import { useEffect, useState } from "react";
 import Avatar from "react-avatar-edit";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import AvailableTimesTable from "../AdminDashboard/AvailableTimesTable/AvailableTimesTable";
-import { UserAvatar } from "../AdminDashboard/UserAvatar/UserAvatar";
-import { TabsNavigation } from "./TabsNavigation/TabsNavigation";
 import AvailableTimes from "../AdminDashboard/AvailableTimes/AvailableTimes";
 import Reservations from "../AdminDashboard/Reservations/Reservations";
+import { UserAvatar } from "../AdminDashboard/UserAvatar/UserAvatar";
+import { TabsNavigation } from "./TabsNavigation/TabsNavigation";
 
 type AccountFormValues = {
   firstName: string;
@@ -36,13 +35,7 @@ export type UserResponse = {
   updated_at: string;
 };
 
-type UsersListResponse = {
-  total: number;
-  page: number;
-  data: UserResponse[];
-};
-
-function AdminDashboard() {
+function UserDashboard() {
   const {
     register,
     handleSubmit,
@@ -58,7 +51,6 @@ function AdminDashboard() {
   const [profilePhoto, setProfilePhoto] = useState<string>(
     "/images/default-pfp.webp"
   );
-  const [users, setUsers] = useState<UserResponse[]>([]);
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
@@ -92,7 +84,6 @@ function AdminDashboard() {
 
   useEffect(() => {
     getProfilePhoto();
-    fetchUsers();
   }, []);
 
   const getProfilePhoto = async () => {
@@ -111,16 +102,6 @@ function AdminDashboard() {
         console.error("Error fetching profile photo", error);
         setProfilePhoto("/images/default-pfp.webp");
       }
-    }
-  };
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axiosInstance.get<UsersListResponse>("/user");
-      setUsers(response.data.data);
-    } catch (error) {
-      console.error("Failed to fetch users", error);
-      toast.error("بارگزاری لیست کاربران با خطا مواجه شد");
     }
   };
 
@@ -190,12 +171,6 @@ function AdminDashboard() {
         toast.error("ویرایش اطلاعات با خطا مواجه شد");
       }
     }
-  };
-
-  const removeUserFromList = (userId: number) => {
-    setUsers((prevUsers) =>
-      prevUsers.filter((user) => user.id !== userId)
-    );
   };
 
   return (
@@ -379,4 +354,4 @@ function AdminDashboard() {
   );
 }
 
-export default AdminDashboard;
+export default UserDashboard;
