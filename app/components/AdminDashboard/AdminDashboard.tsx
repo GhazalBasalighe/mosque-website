@@ -62,6 +62,7 @@ function AdminDashboard() {
     "/images/default-pfp.webp"
   );
   const [users, setUsers] = useState<UserResponse[]>([]);
+  const [hasLoggedOut, setHasLoggedOut] = useState<boolean>(false);
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
@@ -216,7 +217,12 @@ function AdminDashboard() {
           <div className="text-2xl font-bold text-white">نام مسجد </div>
         </Link>
         <TabsNavigation />
-        <UserAvatar profilePhoto={profilePhoto} username={username} />
+        <UserAvatar
+          profilePhoto={profilePhoto}
+          username={username}
+          hasLoggedOut={hasLoggedOut}
+          setHasLoggedOut={setHasLoggedOut}
+        />
       </div>
       <TabsContent
         value="account"

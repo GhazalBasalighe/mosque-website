@@ -51,6 +51,7 @@ function UserDashboard() {
   const [profilePhoto, setProfilePhoto] = useState<string>(
     "/images/default-pfp.webp"
   );
+  const [hasLoggedOut, setHasLoggedOut] = useState<boolean>(false);
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
@@ -188,7 +189,12 @@ function UserDashboard() {
           <div className="text-2xl font-bold text-white">نام مسجد </div>
         </Link>
         <TabsNavigation />
-        <UserAvatar profilePhoto={profilePhoto} username={username} />
+        <UserAvatar
+          profilePhoto={profilePhoto}
+          username={username}
+          hasLoggedOut={hasLoggedOut}
+          setHasLoggedOut={setHasLoggedOut}
+        />
       </div>
       <TabsContent
         value="account"

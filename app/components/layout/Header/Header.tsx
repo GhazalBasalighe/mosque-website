@@ -2,14 +2,38 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "../../AdminDashboard/UserAvatar/UserAvatar";
+import { axiosInstance } from "@/app/api/api";
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [profilePhoto, setProfilePhoto] = useState<string>("");
+  const [hasLoggedOut, setHasLoggedOut] = useState<boolean>(false);
+
+  const getProfilePhoto = async () => {
+    const userId = localStorage.getItem("id");
+    if (userId) {
+      try {
+        const response = await axiosInstance.get(
+          `/user/avatar/${userId}`,
+          {
+            responseType: "blob",
+          }
+        );
+        const imageUrl = URL.createObjectURL(response.data);
+        setProfilePhoto(imageUrl);
+      } catch (error) {
+        console.error("Error fetching profile photo", error);
+        setProfilePhoto("/images/default-pfp.webp");
+      }
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 0);
     };
+    getProfilePhoto();
 
     window.addEventListener("scroll", handleScroll);
     return () => {
@@ -35,11 +59,21 @@ export default function Header() {
               بسم الله الرحمن الرحيم
             </div>
           </Link>
-          <Link href="/auth">
-            <Button variant="outline" size="lg" className="text-white">
-              ورود / ثبت نام
-            </Button>
-          </Link>
+          {localStorage.getItem("token") &&
+          localStorage.getItem("userName") ? (
+            <UserAvatar
+              profilePhoto={profilePhoto}
+              username={localStorage.getItem("userName")}
+              hasLoggedOut={hasLoggedOut}
+              setHasLoggedOut={setHasLoggedOut}
+            />
+          ) : (
+            <Link href="/auth">
+              <Button variant="outline" size="lg" className="text-white">
+                ورود / ثبت نام
+              </Button>
+            </Link>
+          )}
         </div>
         <nav
           className={`mt-4 absolute top-1/2 right-1/2 translate-x-1/2 p-4 shadow-sm rounded-lg backdrop-blur-xl z-20 w-1/3 ${
