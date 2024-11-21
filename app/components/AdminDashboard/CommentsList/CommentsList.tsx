@@ -18,7 +18,7 @@ type Comment = {
   body: string;
   name: string;
   email: string;
-  show: boolean | null;
+  show: 0 | 1 | null;
   created_at: string;
   commentableType: string;
   commentableId: number;
@@ -73,12 +73,8 @@ export function CommentList() {
     setIsDialogOpen(false);
   };
 
-  const toggleShowState = async (
-    commentId: number,
-    currentState: boolean | null
-  ) => {
+  const changeShowState = async (commentId: number, newState: 0 | 1) => {
     try {
-      const newState = currentState === null ? true : !currentState;
       await axiosInstance.patch(`/comment/showStatus/${commentId}`, {
         show: newState,
       });
@@ -91,7 +87,7 @@ export function CommentList() {
       );
       toast.success("وضعیت نمایش با موفقیت تغییر یافت");
     } catch (error) {
-      console.error("Failed to toggle show state", error);
+      console.error("Failed to change show state", error);
       toast.error("تغییر وضعیت نمایش با خطا مواجه شد");
     }
   };
@@ -150,24 +146,23 @@ export function CommentList() {
                     )}
                   </TableCell>
                   <TableCell className="p-4 text-start">
-                    <button
-                      className={`cursor-pointer px-3 py-1 rounded-full text-white ${
-                        comment.show
+                    <select
+                      value={comment.show === 1 ? "1" : "0"}
+                      onChange={(e) =>
+                        changeShowState(
+                          comment.id,
+                          e.target.value === "1" ? 1 : 0
+                        )
+                      }
+                      className={`cursor-pointer px-3 py-1 rounded text-white ${
+                        comment.show === 1
                           ? "bg-green-500 hover:bg-green-600"
-                          : comment.show === null
-                          ? "bg-gray-500 hover:bg-gray-600"
                           : "bg-yellow-500 hover:bg-yellow-600"
                       }`}
-                      onClick={() =>
-                        toggleShowState(comment.id, comment.show)
-                      }
                     >
-                      {comment.show
-                        ? "نمایش داده شده"
-                        : comment.show === null
-                        ? "نامشخص"
-                        : "نمایش داده نشده"}
-                    </button>
+                      <option value="1">نمایش داده شود</option>
+                      <option value="0">نمایش داده نشود</option>
+                    </select>
                   </TableCell>
                   <TableCell className="p-4 text-start relative">
                     {hoveredRow === comment.id && (

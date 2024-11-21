@@ -107,7 +107,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
     e.preventDefault();
 
     try {
-      const response = await axiosInstance.post(`/comment`, {
+      await axiosInstance.post(`/comment`, {
         ...newComment,
         commentableType,
         commentableId,

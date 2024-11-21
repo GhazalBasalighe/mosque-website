@@ -452,7 +452,7 @@ function AdminDashboard() {
           width={100}
           height={100}
         />
-        <Card className="w-full ml-auto p-6 bg-white/80 z-10 shadow-xl rounded-lg">
+        <Card className="w-full ml-auto p-6 bg-white/90 z-50 relative shadow-xl rounded-lg">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             لیست نظرات کاربران
           </h2>
