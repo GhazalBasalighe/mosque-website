@@ -207,108 +207,116 @@ const AvailableTimes = () => {
 
   return (
     <div className="grid grid-cols-3 gap-4">
-      <Card className="w-full rtl">
-        <CardHeader>
-          <CardTitle className="text-right font-bold text-2xl">
-            {editMode ? "ویرایش بازه زمانی" : "انتخاب بازه‌های زمانی رزرو"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-4">
-              <label className="text-right text-sm font-medium">
-                قیمت (به ریال):
-              </label>
-              <div className="w-full">
-                <Input
-                  placeholder="قیمت را وارد کنید"
-                  className="flex-1 w-full text-right"
-                  value={price}
-                  onChange={handlePriceChange}
-                  inputMode="numeric"
+      {localStorage.getItem("role") === "Admin" && (
+        <Card className="w-full rtl">
+          <CardHeader>
+            <CardTitle className="text-right font-bold text-2xl">
+              {editMode
+                ? "ویرایش بازه زمانی"
+                : "انتخاب بازه‌های زمانی رزرو"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <label className="text-right text-sm font-medium">
+                  قیمت (به ریال):
+                </label>
+                <div className="w-full">
+                  <Input
+                    placeholder="قیمت را وارد کنید"
+                    className="flex-1 w-full text-right"
+                    value={price}
+                    onChange={handlePriceChange}
+                    inputMode="numeric"
+                  />
+                  <span className="text-right text-xs text-gray-500">
+                    لطفاً قیمت را به ریال وارد کنید
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <label className="text-right text-sm font-medium">
+                  ساعت شروع:
+                </label>
+                <DatePicker
+                  {...datePickerProps}
+                  //@ts-ignore
+                  value={new Date(timeRange.startTime)}
+                  onChange={(value) =>
+                    handleTimeChange(value, "startTime")
+                  }
+                  placeholder="ساعت شروع را انتخاب کنید"
+                  style={{ width: "100%" }}
+                  disabled={editMode}
+                  readOnly={editMode}
                 />
-                <span className="text-right text-xs text-gray-500">
-                  لطفاً قیمت را به ریال وارد کنید
-                </span>
+              </div>
+              <div className="flex items-center gap-4">
+                <label className="text-right text-sm font-medium">
+                  ساعت پایان:
+                </label>
+                <DatePicker
+                  {...datePickerProps}
+                  //@ts-ignore
+                  value={new Date(timeRange.endTime)}
+                  onChange={(value) => handleTimeChange(value, "endTime")}
+                  placeholder="ساعت پایان را انتخاب کنید"
+                  style={{ width: "100%" }}
+                  disabled={editMode}
+                  readOnly={editMode}
+                />
               </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-4 mt-6">
               <label className="text-right text-sm font-medium">
-                ساعت شروع:
+                توضیحات:
               </label>
-              <DatePicker
-                {...datePickerProps}
-                //@ts-ignore
-                value={new Date(timeRange.startTime)}
-                onChange={(value) => handleTimeChange(value, "startTime")}
-                placeholder="ساعت شروع را انتخاب کنید"
-                style={{ width: "100%" }}
-                disabled={editMode}
-                readOnly={editMode}
+              <textarea
+                className="flex h-20 w-full rounded-md border border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-teal-600"
+                placeholder="توضیحات را وارد کنید"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
-            <div className="flex items-center gap-4">
-              <label className="text-right text-sm font-medium">
-                ساعت پایان:
-              </label>
-              <DatePicker
-                {...datePickerProps}
-                //@ts-ignore
-                value={new Date(timeRange.endTime)}
-                onChange={(value) => handleTimeChange(value, "endTime")}
-                placeholder="ساعت پایان را انتخاب کنید"
-                style={{ width: "100%" }}
-                disabled={editMode}
-                readOnly={editMode}
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-4 mt-6">
-            <label className="text-right text-sm font-medium">
-              توضیحات:
-            </label>
-            <textarea
-              className="flex h-20 w-full rounded-md border border-gray-300 bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-teal-600"
-              placeholder="توضیحات را وارد کنید"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-          <div className="flex gap-2 mt-4">
-            <button
-              onClick={handleSubmit}
-              className="flex-1 rounded-md bg-teal-600 py-2 text-white hover:bg-teal-700"
-            >
-              {editMode ? "ثبت تغییرات" : "ثبت بازه جدید"}
-            </button>
-            {editMode && (
+            <div className="flex gap-2 mt-4">
               <button
-                onClick={resetForm}
-                className="flex-1 rounded-md bg-gray-500 py-2 text-white hover:bg-gray-600"
+                onClick={handleSubmit}
+                className="flex-1 rounded-md bg-teal-600 py-2 text-white hover:bg-teal-700"
               >
-                انصراف
+                {editMode ? "ثبت تغییرات" : "ثبت بازه جدید"}
               </button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+              {editMode && (
+                <button
+                  onClick={resetForm}
+                  className="flex-1 rounded-md bg-gray-500 py-2 text-white hover:bg-gray-600"
+                >
+                  انصراف
+                </button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
       <AvailableTimesTable
         availableTimes={availableTimes}
         onDeleteClick={handleDeleteClick}
         onEditClick={handleEdit}
         onReservationClick={handleReservationClick}
       />
-      <DeleteConfirmDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        onConfirm={() => {
-          if (selectedTimeId) {
-            handleDelete(selectedTimeId);
-            setSelectedTimeId(null);
-            setIsDialogOpen(false);
-          }
-        }}
-      />
+      {localStorage.getItem("role") === "Admin" && (
+        <DeleteConfirmDialog
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          onConfirm={() => {
+            if (selectedTimeId) {
+              handleDelete(selectedTimeId);
+              setSelectedTimeId(null);
+              setIsDialogOpen(false);
+            }
+          }}
+        />
+      )}
       <ReservationConfirmDialog
         isOpen={isReservationDialogOpen}
         onClose={() => setIsReservationDialogOpen(false)}

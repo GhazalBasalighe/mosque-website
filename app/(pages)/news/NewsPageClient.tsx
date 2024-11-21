@@ -113,11 +113,26 @@ export default function NewsPageClient({
                 onClick={() => handleRowClick(item.id)}
               >
                 {thumbnails[item.id] ? (
-                  <img
-                    src={thumbnails[item.id]}
-                    alt={item.title}
-                    className="w-full h-48 object-cover"
-                  />
+                  <div className="relative">
+                    <img
+                      src={thumbnails[item.id]}
+                      alt={item.title}
+                      className="w-full h-48 object-cover "
+                    />
+                    <div className="absolute bottom-0 right-0 m-4">
+                      {item.comments_enabled ? (
+                        <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                          <CheckCircle size={16} className="mr-1" />
+                          نظرات فعال
+                        </div>
+                      ) : (
+                        <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                          <XCircle size={16} className="mr-1" />
+                          نظرات غیر فعال
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 ) : (
                   <div className="w-full h-48 bg-gradient-to-r from-teal-500 to-blue-500 relative">
                     <div className="absolute bottom-0 right-0 m-4">

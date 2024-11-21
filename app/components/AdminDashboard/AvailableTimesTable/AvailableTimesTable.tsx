@@ -91,20 +91,24 @@ const AvailableTimesTable = ({
                   </TableCell>
                   <TableCell className="p-4 text-start relative group">
                     <div className="invisible group-hover:visible flex gap-2">
-                      <button
-                        onClick={() => onEditClick(time)}
-                        className="text-blue-600 hover:text-blue-800"
-                        title="ویرایش"
-                      >
-                        <Pencil size={20} />
-                      </button>
-                      <button
-                        onClick={() => onDeleteClick(time.id)}
-                        className="text-red-600 hover:text-red-800"
-                        title="حذف"
-                      >
-                        <Trash size={20} />
-                      </button>
+                      {localStorage.getItem("role") === "Admin" && (
+                        <>
+                          <button
+                            onClick={() => onEditClick(time)}
+                            className="text-blue-600 hover:text-blue-800"
+                            title="ویرایش"
+                          >
+                            <Pencil size={20} />
+                          </button>
+                          <button
+                            onClick={() => onDeleteClick(time.id)}
+                            className="text-red-600 hover:text-red-800"
+                            title="حذف"
+                          >
+                            <Trash size={20} />
+                          </button>{" "}
+                        </>
+                      )}
                       {time.reserved === 0 && (
                         <button
                           onClick={() => onReservationClick(time)}

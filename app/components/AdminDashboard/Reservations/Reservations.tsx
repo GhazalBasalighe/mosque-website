@@ -15,7 +15,11 @@ const Reservations = () => {
 
   const fetchReservations = async () => {
     try {
-      const response = await axiosInstance.get("/reservation");
+      let response;
+      if (localStorage.getItem("role") !== "Admin")
+        response = await axiosInstance.get("/reservation/my");
+      else response = await axiosInstance.get("/reservation");
+
       setReservations(response.data.data);
     } catch (error) {
       console.error("Error fetching available times:", error);
