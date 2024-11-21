@@ -2,6 +2,8 @@
 import { useState } from "react";
 
 export default function FAQ() {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const faqs = [
     {
       question: "چگونه می‌توانم در مسجد ثبت‌نام کنم؟",
@@ -37,8 +39,6 @@ export default function FAQ() {
 
         <div className="space-y-4">
           {faqs.map((faq, index) => {
-            const [isOpen, setIsOpen] = useState(false);
-
             return (
               <div
                 key={index}

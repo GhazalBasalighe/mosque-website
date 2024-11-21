@@ -4,17 +4,6 @@ import Header from "@/app/components/layout/Header/Header";
 import Footer from "@/app/components/layout/Footer/Footer";
 import NewsPageClient from "./NewsPageClient";
 
-// Define News Type
-interface News {
-  id: number;
-  title: string;
-  content?: string;
-  comments_enabled: number;
-  created_at: string;
-  author_first_name: string;
-  author_last_name: string;
-}
-
 // Define metadata for SEO
 export const metadata: Metadata = {
   title: "اخبار | Your Site Name",

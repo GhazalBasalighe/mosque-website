@@ -89,13 +89,13 @@ const AvailableTimes = () => {
 
   const handleSubmit = async () => {
     try {
-      const startDate = timeRange.startTime //@ts-ignore
+      const startDate = timeRange.startTime //@ts-expect-error
         ? new Date(timeRange.startTime)
             .toISOString()
             .replace("T", " ")
             .slice(0, 19)
         : "";
-      const endDate = timeRange.endTime //@ts-ignore
+      const endDate = timeRange.endTime //@ts-expect-error
         ? new Date(timeRange.endTime)
             .toISOString()
             .replace("T", " ")
@@ -241,7 +241,7 @@ const AvailableTimes = () => {
                 </label>
                 <DatePicker
                   {...datePickerProps}
-                  //@ts-ignore
+                  //@ts-expect-error
                   value={new Date(timeRange.startTime)}
                   onChange={(value) =>
                     handleTimeChange(value, "startTime")
@@ -258,7 +258,7 @@ const AvailableTimes = () => {
                 </label>
                 <DatePicker
                   {...datePickerProps}
-                  //@ts-ignore
+                  //@ts-expect-error
                   value={new Date(timeRange.endTime)}
                   onChange={(value) => handleTimeChange(value, "endTime")}
                   placeholder="ساعت پایان را انتخاب کنید"

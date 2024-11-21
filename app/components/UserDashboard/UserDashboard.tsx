@@ -131,9 +131,7 @@ function UserDashboard() {
     }
   };
 
-  const onSubmitAccount: SubmitHandler<AccountFormValues> = async (
-    data
-  ) => {
+  const onSubmitAccount: SubmitHandler<AccountFormValues> = async () => {
     const userId = localStorage.getItem("id");
     if (userId && defaultValues) {
       try {

@@ -1,14 +1,13 @@
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
 import { axiosInstance } from "@/app/api/api";
+import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
+import { Button } from "@/components/ui/button";
 import {
   Popover,
-  PopoverTrigger,
   PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
-import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 type UserAvatarProps = {
   profilePhoto: string;
