@@ -1,4 +1,5 @@
 "use client";
+import { convertToPersianDigits } from "@/app/helpers/convertToPersianDigits";
 import {
   Facebook,
   Instagram,
@@ -9,8 +10,44 @@ import {
   Twitter,
 } from "lucide-react"; // Importing specific icons from lucide-react
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+// Define type for prayer times
+interface PrayerTimes {
+  Imsaak: string;
+  Noon: string;
+  Maghreb: string;
+  Sunset: string;
+}
 
 export default function Footer() {
+  const [prayerTimes, setPrayerTimes] = useState<PrayerTimes | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    async function fetchPrayerTimes() {
+      try {
+        const response = await fetch(
+          "https://prayer.aviny.com/api/prayertimes/1"
+        );
+        const jsonResponse = await response.json();
+
+        setPrayerTimes({
+          Imsaak: jsonResponse.Imsaak || "نامشخص",
+          Noon: jsonResponse.Noon || "نامشخص",
+          Maghreb: jsonResponse.Maghreb || "نامشخص",
+          Sunset: jsonResponse.Sunset || "نامشخص",
+        });
+      } catch (error) {
+        console.error("Error fetching prayer times:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPrayerTimes();
+  }, []);
+
   return (
     <footer className="bg-teal-900 text-gray-200 py-12">
       <div className="container mx-auto px-6">
@@ -48,9 +85,34 @@ export default function Footer() {
           {/* Prayer Times */}
           <div>
             <h3 className="animated-heading">اوقات شرعی</h3>
-            <p>اذان صبح: ۰۵:۱۵ صبح</p>
-            <p>اذان ظهر: ۱۲:۳۰ ظهر</p>
-            <p>اذان مغرب: ۱۸:۱۰ عصر</p>
+            {loading ? (
+              <p>در حال بارگذاری...</p>
+            ) : (
+              <div className=" flex flex-col gap-2">
+                <p>
+                  اذان صبح:{" "}
+                  {convertToPersianDigits(
+                    prayerTimes?.Imsaak || "00:00:00"
+                  )}
+                </p>
+                <p>
+                  اذان ظهر:{" "}
+                  {convertToPersianDigits(prayerTimes?.Noon || "00:00:00")}
+                </p>
+                <p>
+                  اذان عصر:{" "}
+                  {convertToPersianDigits(
+                    prayerTimes?.Sunset || "00:00:00"
+                  )}
+                </p>
+                <p>
+                  اذان مغرب:{" "}
+                  {convertToPersianDigits(
+                    prayerTimes?.Maghreb || "00:00:00"
+                  )}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Quick Links */}
