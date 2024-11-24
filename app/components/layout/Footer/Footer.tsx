@@ -8,16 +8,18 @@ import {
   Phone,
   Send,
   Twitter,
-} from "lucide-react"; // Importing specific icons from lucide-react
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 // Define type for prayer times
 interface PrayerTimes {
   Imsaak: string;
+  Sunrise: string;
   Noon: string;
-  Maghreb: string;
   Sunset: string;
+  Maghreb: string;
+  Midnight: string;
 }
 
 export default function Footer() {
@@ -34,9 +36,11 @@ export default function Footer() {
 
         setPrayerTimes({
           Imsaak: jsonResponse.Imsaak || "نامشخص",
+          Sunrise: jsonResponse.Sunrise || "نامشخص",
           Noon: jsonResponse.Noon || "نامشخص",
-          Maghreb: jsonResponse.Maghreb || "نامشخص",
           Sunset: jsonResponse.Sunset || "نامشخص",
+          Maghreb: jsonResponse.Maghreb || "نامشخص",
+          Midnight: jsonResponse.Midnight || "نامشخص",
         });
       } catch (error) {
         console.error("Error fetching prayer times:", error);
@@ -88,7 +92,7 @@ export default function Footer() {
             {loading ? (
               <p>در حال بارگذاری...</p>
             ) : (
-              <div className=" flex flex-col gap-2">
+              <div className="flex flex-col gap-2">
                 <p>
                   اذان صبح:{" "}
                   {convertToPersianDigits(
@@ -96,11 +100,17 @@ export default function Footer() {
                   )}
                 </p>
                 <p>
+                  طلوع آفتاب:{" "}
+                  {convertToPersianDigits(
+                    prayerTimes?.Sunrise || "00:00:00"
+                  )}
+                </p>
+                <p>
                   اذان ظهر:{" "}
                   {convertToPersianDigits(prayerTimes?.Noon || "00:00:00")}
                 </p>
                 <p>
-                  اذان عصر:{" "}
+                  غروب آفتاب:{" "}
                   {convertToPersianDigits(
                     prayerTimes?.Sunset || "00:00:00"
                   )}
@@ -109,6 +119,12 @@ export default function Footer() {
                   اذان مغرب:{" "}
                   {convertToPersianDigits(
                     prayerTimes?.Maghreb || "00:00:00"
+                  )}
+                </p>
+                <p>
+                  نیمه شب شرعی:{" "}
+                  {convertToPersianDigits(
+                    prayerTimes?.Midnight || "00:00:00"
                   )}
                 </p>
               </div>
