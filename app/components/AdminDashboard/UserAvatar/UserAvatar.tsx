@@ -7,6 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 
 type UserAvatarProps = {
@@ -61,6 +62,9 @@ export function UserAvatar({
       toast.success("خروج با موفقیت انجام شد");
     }
   };
+
+  const rolePath = localStorage.getItem("role")?.toLowerCase();
+
   if (!hasLoggedOut) {
     return (
       <div className="flex items-center gap-4 space-x-4">
@@ -90,6 +94,15 @@ export function UserAvatar({
                   <span>نقش‌:</span>
                   <span>{userProfile.role}</span>
                 </p>
+                {/* Role-based link */}
+                {rolePath && (
+                  <Link
+                    href={`/${rolePath}`}
+                    className="text-teal-500 hover:underline mt-2 block"
+                  >
+                    مشاهده پنل کاربری{" "}
+                  </Link>
+                )}
               </div>
             ) : (
               <p>در حال بارگذاری...</p>
