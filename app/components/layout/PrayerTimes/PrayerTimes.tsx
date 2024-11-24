@@ -32,19 +32,29 @@ export default function PrayerTimes() {
             icon: <Sun className="text-yellow-400" />,
           },
           {
+            name: "طلوع آفتاب",
+            time: jsonResponse.Sunrise || "نامشخص",
+            icon: <Sun className="text-yellow-300" />,
+          },
+          {
             name: "اذان ظهر",
             time: jsonResponse.Noon || "نامشخص",
             icon: <Sun className="text-orange-500" />,
           },
           {
-            name: "اذان عصر",
+            name: "غروب آفتاب",
             time: jsonResponse.Sunset || "نامشخص",
-            icon: <Sunset className="text-red-500" />,
+            icon: <Sunset className="text-red-400" />,
           },
           {
             name: "اذان مغرب",
             time: jsonResponse.Maghreb || "نامشخص",
             icon: <Moon className="text-blue-500" />,
+          },
+          {
+            name: "نیمه شب شرعی",
+            time: jsonResponse.Midnight || "نامشخص",
+            icon: <Moon className="text-indigo-600" />,
           },
         ];
 
@@ -76,7 +86,7 @@ export default function PrayerTimes() {
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-2">
           {prayerTimes.map((prayer, index) => (
             <div
               key={index}
